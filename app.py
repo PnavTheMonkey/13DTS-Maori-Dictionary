@@ -19,6 +19,10 @@ def render_homepage():
     return render_template('home.html')
     print("ssss")
 
+@app.route('/login', methods=['POST', 'GET'])
+def render_login():
+    return render_template('login.html')
+
 
 
 app.run(host='0.0.0.0', debug=True)
