@@ -46,7 +46,7 @@ def render_signup():
             cur.execute(query, (fname, lname, email, password))
         except sqlite3.IntegrityError:
             con.close()
-            return r edirect("/signup?error='Email is already in use.")
+            return redirect("/signup?error='Email is already in use.")
 
         con.commit()
         con.close()
