@@ -23,7 +23,39 @@ def render_homepage():
 def render_login():
     return render_template('login.html')
 
+@app.route('/signup', methods=['POST', 'GET'])
+def render_signup():
+    if request.method == 'POST':
+        print(request.form)
+        fname = request.form('fname').title().strip()
+        lname = request.form.get('lname').title().strip()
+        email = request.form.get('email').lower().strip()
+        password = request.form.get('password')
+        password2 = request.form.get('password2')
 
+        if password != password2:
+            return redirect("/signup?error='Passwords do not match.")
+        if len(password) < 8:
+            return redirect("/signup?error='Password must be at least 8 characters.")
+
+        con = open_database(DATABASE)
+        query = "INSERT INTO users (fname, lname, email, password) VALUES (?,?,?,?)"
+        cur = con.cursor()
+
+        try:
+            cur.execute(query, (fname, lname, email, password))
+        except sqlite3.IntegrityError:
+            con.close()
+            return r edirect("/signup?error='Email is already in use.")
+
+        con.commit()
+        con.close()
+
+        return redirect("/login")
+
+
+
+    return render_template('/signup.html')
 
 app.run(host='0.0.0.0', debug=True)
 
