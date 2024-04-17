@@ -21,7 +21,25 @@ def render_homepage():
 
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
+
     return render_template('login.html')
+
+@app.route('/dictionary/<cat_id>')
+def render_menu_page(cat_id):
+    con = create_connection(DATABASE)
+    query = "SELECT name, description, volume, image, price FROM products WHERE cat_id=?"
+    cur = con.cursor()
+    cur.execute(query, (cat_id, ))
+    dictionary_list = cur.fetchall()
+
+    dictionary_list = cur.fetchall()
+    query = "SELECT id, name FROM category"
+    cur = con.cursor()
+    cur.execute(query)
+    categories_list = cur.fetchall()
+    con.close()
+    print(dictionary_list)
+    return render_template('dictionary.html', products=dictionary_list, categories=categories_list)
 
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
