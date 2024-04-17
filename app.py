@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request  #imports the necces
 import sqlite3
 from sqlite3 import Error
 
-DATABASE ='./database.db'
+DATABASE ='./datab ase.db'
 app = Flask(__name__)
 
 
@@ -45,16 +45,16 @@ def render_menu_page(cat_id):
 def render_signup():
     if request.method == 'POST':
         print(request.form)
-        fname = request.form('fname').title().strip()
+        fname = request.form.get('fname').title().strip()
         lname = request.form.get('lname').title().strip()
         email = request.form.get('email').lower().strip()
         password = request.form.get('password')
         password2 = request.form.get('password2')
 
         if password != password2:
-            return redirect("/signup?error='Passwords do not match.")
+            return redirect("\signup?error='Passwords+do+not+match")
         if len(password) < 8:
-            return redirect("/signup?error='Password must be at least 8 characters.")
+            return redirect("\signup?error='Password+must+be+at+least+8+characters")
 
         con = open_database(DATABASE)
         query = "INSERT INTO users (fname, lname, email, password) VALUES (?,?,?,?)"
@@ -64,12 +64,12 @@ def render_signup():
             cur.execute(query, (fname, lname, email, password))
         except sqlite3.IntegrityError:
             con.close()
-            return redirect("/signup?error='Email is already in use.")
+            return redirect("\signup?error='Email is already in use.")
 
         con.commit()
         con.close()
 
-        return redirect("/login")
+        return redirect("\login")
 
 
 
