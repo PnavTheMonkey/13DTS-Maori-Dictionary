@@ -1,10 +1,14 @@
 from flask import Flask, render_template, redirect, request  #imports the neccesary modules from Flask
 import sqlite3
 from sqlite3 import Error
+from flask_bcrypt import Bcrypt
 
-DATABASE ='./datab ase.db'
+
+DATABASE ='./database.db'
+
 app = Flask(__name__)
-
+bcrypt = Bcrypt(app)
+app.secret_key = "uhb*#189hpaqey "
 
 def create_connection(db_file):
     try:
@@ -56,12 +60,13 @@ def render_signup():
         if len(password) < 8:
             return redirect("\signup?error='Password+must+be+at+least+8+characters")
 
+        hashed_password = bcrypt.generate_password_hash(password)
         con = open_database(DATABASE)
         query = "INSERT INTO users (fname, lname, email, password) VALUES (?,?,?,?)"
         cur = con.cursor()
 
         try:
-            cur.execute(query, (fname, lname, email, password))
+            cur.execute(query, (fname, lname, email, hashed_password))
         except sqlite3.IntegrityError:
             con.close()
             return redirect("\signup?error='Email is already in use.")
