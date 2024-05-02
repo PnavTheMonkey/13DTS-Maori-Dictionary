@@ -7,9 +7,7 @@ from sqlite3 import Error
 DATABASE ='./database.db'   # Define the path to the SQLite database file
 
 app = Flask(__name__)    # Create a Flask application instance
-
 bcrypt = Bcrypt(app)    ## Initialize Bcrypt with the Flask application
-
 app.secret_key = "uhb*#189hpaqey "    # Set a secret key for the Flask application this is the key for hashed password
 
 
@@ -21,6 +19,13 @@ def create_connection(db_file):       # Function to create a connection to the S
         print(e)           # Print an error message if connection fails
     return None
 
+def is_logged_in(): # Function to check if user is logged in
+    if session.get("email") is None:
+        print("not logged in ")         # Print message if user is not logged in
+        return False
+    else:
+        print("logged in!")         # Print message if user is logged in
+        return True
 @app.route('/')
 def render_homepage():     # Render the home.html template
     return render_template('home.html')      # This print statement will not be executed as it comes after the return statement
@@ -28,8 +33,35 @@ def render_homepage():     # Render the home.html template
 
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
+    if is_logged_in():      # Check if user is already logged in
+        return redirect('/menu/1')
+    if request.method == "POST":         # Extract email and password from the form
+        email = request.form['email'].strip().lower()
+        password = request.form['password'].strip()
 
-    return render_template('login.html')
+        query = """SELECT id, fname, password FROM user WHERE email = ?"""       # Query to fetch user data from the database
+        con = create_connection(DATABASE)         # Create a connection to the database
+        cur = con.cursor()
+        cur.execute(query, (email, ))
+        user_data = cur.fetchone()         # Fetch user data
+        con.close()
+
+        try:
+            user_id = user_data[0]             # Extract user_id, first_name, and db_password from user_data
+            first_name = user_data[1]
+            db_password = user_data[2]
+        except IndexError:
+            return redirect("/login?error=Invalid+username+or+password")        # Redirect to login page with an error message if user does not exist
+        if not bcrypt.check_password_hash(db_password, password):         # Check if the provided password matches the hashed password stored in the database
+            return redirect(request.referrer + '?error=Email+invalid+or+password+incorrect')        # Redirect to the previous page with an error message if password is incorrect
+
+        # Create session variables
+        session['email'] = email
+        session['userid'] = user_id
+        session['firstname'] = first_name
+        print(session)
+        return redirect('/')
+    return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
 @app.route('/dictionary/<cat_id>')
 def render_menu_page(cat_id):
