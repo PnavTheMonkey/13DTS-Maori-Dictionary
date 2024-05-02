@@ -1,14 +1,14 @@
 from flask import Flask, render_template, redirect, request  #imports the neccesary modules from Flask
 import sqlite3
 from sqlite3 import Error
-from flask_bcrypt import Bcrypt
+#from flask_bcrypt import Bcrypt
 
 
 DATABASE ='./database.db'
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.secret_key = "uhb*#189hpaqey "
+#bcrypt = Bcrypt(app)
+#app.secret_key = "uhb*#189hpaqey "
 
 def create_connection(db_file):
     try:
@@ -21,7 +21,7 @@ def create_connection(db_file):
 @app.route('/')
 def render_homepage():
     return render_template('home.html')
-    print("ssss")
+    print("home")
 
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
