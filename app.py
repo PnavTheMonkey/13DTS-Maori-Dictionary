@@ -33,7 +33,7 @@ def render_homepage():     # Render the home.html template
 
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
-    if is_logged_in():      # Check if user is already logged in
+    if is_logged_in():      # Check if user is already logged in.
         return redirect('/menu/1')
     if request.method == "POST":         # Extract email and password from the form
         email = request.form['email'].strip().lower()
