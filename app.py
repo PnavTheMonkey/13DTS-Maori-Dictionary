@@ -8,7 +8,7 @@ DATABASE ='C:/Users/Kartik/OneDrive/13DTS/13DTS-Maori-Dictionary/database.db'   
 
 app = Flask(__name__)    # Create a Flask application instance
 bcrypt = Bcrypt(app)    ## Initialize Bcrypt with the Flask application
-app.secret_key = "uhb*#1e8hp*9x "    # Set a secret key for the Flask application this is the key for hashed password
+app.secret_key = "uhb*#1e8hp*9x"    # Set a secret key for the Flask application this is the key for hashed password
 
 
 def create_connection(db_file):       # Function to create a connection to the SQLite database
@@ -35,12 +35,12 @@ def render_homepage():     # Render the home.html template
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
     if is_logged_in():      # Check if user is already logged in.
-        return redirect('/menu/1')
+        return redirect('/base')
     if request.method == "POST":         # Extract email and password from the form
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
 
-        query = """SELECT id, fname, password FROM user WHERE email = ?"""       # Query to fetch user data from the database
+        query = """SELECT id, fname, password FROM account_table WHERE email = ?"""       # Query to fetch user data from the database
         con = create_connection(DATABASE)         # Create a connection to the database
         cur = con.cursor()
         cur.execute(query, (email, ))
@@ -51,6 +51,7 @@ def render_login():
             user_id = user_data[0]             # Extract user_id, first_name, and db_password from user_data
             first_name = user_data[1]
             db_password = user_data[2]
+            print(f'DB password = {db_password}')
         except IndexError:
             return redirect("/login?error=Invalid+username+or+password")        # Redirect to login page with an error message if user does not exist
         if not bcrypt.check_password_hash(db_password, password):         # Check if the provided password matches the hashed password stored in the database
