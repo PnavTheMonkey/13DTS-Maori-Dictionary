@@ -1,14 +1,14 @@
-from flask import Flask, render_template, redirect, request  #imports the neccesary modules from Flask
+from flask import Flask, render_template, redirect, request, session  #imports the neccesary modules from Flask
 import sqlite3
 from sqlite3 import Error
-#from flask_bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt
 
 
-DATABASE ='./database.db'   # Define the path to the SQLite database file
+DATABASE ='C:/Users/Kartik/OneDrive/13DTS/13DTS-Maori-Dictionary/database.db'   # Define the path to the SQLite database file
 
 app = Flask(__name__)    # Create a Flask application instance
 bcrypt = Bcrypt(app)    ## Initialize Bcrypt with the Flask application
-app.secret_key = "uhb*#189hpaqey "    # Set a secret key for the Flask application this is the key for hashed password
+app.secret_key = "uhb*#1e8hp*9x "    # Set a secret key for the Flask application this is the key for hashed password
 
 
 def create_connection(db_file):       # Function to create a connection to the SQLite database
@@ -26,6 +26,7 @@ def is_logged_in(): # Function to check if user is logged in
     else:
         print("logged in!")         # Print message if user is logged in
         return True
+
 @app.route('/')
 def render_homepage():     # Render the home.html template
     return render_template('home.html')      # This print statement will not be executed as it comes after the return statement
@@ -63,7 +64,7 @@ def render_login():
         return redirect('/')
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
-@app.route('/dictionary/<cat_id>')
+@app.route('/dictionary')
 def render_menu_page(cat_id):
     con = create_connection(DATABASE)      # Create a connection to the SQLite database
     query = "SELECT name, description, volume, image, price FROM products WHERE cat_id=?"    # Define the SQL query to fetch products based on cat_id
@@ -97,8 +98,8 @@ def render_signup():
             return redirect("\signup?error='Password+must+be+at+least+8+characters")
 
         hashed_password = bcrypt.generate_password_hash(password)         # Hash the password
-        con = open_database(DATABASE)        # Open a connection to the database
-        query = "INSERT INTO users (fname, lname, email, password) VALUES (?,?,?,?)"
+        con = create_connection(DATABASE)        # Open a connection to the database
+        query = "INSERT INTO account_table (fname, lname, email, password) VALUES (?,?,?,?)"
         cur = con.cursor()
 
         try:
