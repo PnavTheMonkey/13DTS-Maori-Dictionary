@@ -68,13 +68,13 @@ def render_login():
         return redirect('/')
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
-@app.route('/dictionary')
-def render_dictionary_page():
+@app.route('/dictionary/<cat_id>')
+def render_dictionary_page(cat_id):
 
     con = create_connection(DATABASE)  # Create a connection to the SQLite database
-    query = "SELECT english_word, te_reo_word, category, description, user_id, level FROM word_table"  # Define the SQL query to fetch products based on cat_id
+    query = "SELECT english_word, te_reo_word, category, description, user_id, level FROM word_table WHERE cat_id=?"  # Define the SQL query to fetch products based on cat_id
     cur = con.cursor() # Execute the SQL query
-    cur.execute(query)
+    cur.execute(query, (cat_id))
     word_table = cur.fetchall()  # Fetch all the products
     con.close()
     print(word_table)
