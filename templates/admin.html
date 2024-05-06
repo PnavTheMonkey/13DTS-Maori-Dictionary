@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Admin Page</title>  <!-- Printing the title in the heading -->
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!--  -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet"> <!--getting the style sheet and the fonts for the heading of the database from the static folder  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+{% extends "base.html" %}
 
-</head>
+{% block pageheading %}Admin Page{% endblock %}
+{% block main %}
+
 <body>
-    <h1>Welcome to the Admin Page</h1>
 
     <h2>Add New Word</h2>
     <form action="/add_word" method="post">
@@ -29,3 +22,6 @@
     </form>
 </body>
 </html>
+
+
+{% endblock %}
