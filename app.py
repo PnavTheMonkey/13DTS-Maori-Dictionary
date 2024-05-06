@@ -65,22 +65,22 @@ def render_login():
         return redirect('/')
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
-@app.route('/dictionary')
-def render_menu_page(cat_id):
+@app.route('/dictionary/<int:cat_id>')
+def render_base_page(cat_id):
     con = create_connection(DATABASE)      # Create a connection to the SQLite database
     query = "SELECT name, description, volume, image, price FROM products WHERE cat_id=?"    # Define the SQL query to fetch products based on cat_id
     cur = con.cursor()
     cur.execute(query, (cat_id, ))     # Execute the SQL query
-    dictionary_list = cur.fetchall()     # Fetch all the products
+    word_table = cur.fetchall()     # Fetch all the products
 
-    dictionary_list = cur.fetchall()
+    word_table = cur.fetchall()
     query = "SELECT id, name FROM category"
     cur = con.cursor()
     cur.execute(query)
     categories_list = cur.fetchall()      # Fetch categories
     con.close()
-    print(dictionary_list)  # Print the fetched dictionary_list
-    return render_template('dictionary.html', products=dictionary_list, categories=categories_list)      # Render the dictionary.html template with the fetched data
+    print(word_table)  # Print the fetched dictionary_list
+    return render_template('dictionary.html', products=word_table, categories=categories_list)      # Render the dictionary.html template with the fetched data
 
 
 @app.route('/signup', methods=['POST', 'GET'])
