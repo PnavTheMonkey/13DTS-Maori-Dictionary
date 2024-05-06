@@ -1,10 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>Admin Page</title>  <!-- Printing the title in the heading -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!--  -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet"> <!--getting the style sheet and the fonts for the heading of the database from the static folder  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+
 </head>
 <body>
+    <h1>Welcome to the Admin Page</h1>
 
+    <h2>Add New Word</h2>
+    <form action="/add_word" method="post">
+        <label for="word">Word:</label><br>
+        <input type="text" id="word" name="word"><br>
+        <label for="definition">Definition:</label><br>
+        <textarea id="definition" name="definition"></textarea><br><br>
+        <input type="submit" value="Add Word">
+    </form>
+
+    <h2>Delete Word</h2>
+    <form action="/delete_word" method="post">
+        <label for="word_id">Word ID:</label><br>
+        <input type="text" id="word_id" name="word_id"><br><br>
+        <input type="submit" value="Delete Word">
+    </form>
 </body>
 </html>

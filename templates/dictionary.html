@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block pageheading %}
-Words
+Maori and English Words
 {% endblock %}
 
 {% block main %}
@@ -14,6 +14,14 @@ Words
         <th>Category </th>
         <th>Level </th>
       </tr>
+
+    <form action="/dictionary" method="GET">
+            <label for="word-search">Enter you chosen word:</label>
+            <input type="text" id="word-search" name="q" placeholder="Search...">
+            <button type="submit">Search</button>
+            <p></p>
+        </form>
+
     <tbody>
 
     {% for word in words %}

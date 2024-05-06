@@ -29,7 +29,10 @@ def is_logged_in(): # Function to check if user is logged in
 
 @app.route('/')
 def render_homepage():     # Render the home.html template
-    return render_template('home.html')      # This print statement will not be executed as it comes after the return statement
+    return render_template('home.html')      # This print statement will not
+
+
+    # executed as it comes after the return statement
     print("home")
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -66,18 +69,19 @@ def render_login():
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
 @app.route('/dictionary/<int:cat_id>')
-def render_base_page(cat_id):
-    con = create_connection(DATABASE)      # Create a connection to the SQLite database
+def render_dictionary(cat_id):
+
+    con = create_connection(DATABASE)  # Create a connection to the SQLite database
+    return redirect('/base')
     query = "SELECT name, description, volume, image, price FROM products WHERE cat_id=?"    # Define the SQL query to fetch products based on cat_id
     cur = con.cursor()
     cur.execute(query, (cat_id, ))     # Execute the SQL query
-    word_table = cur.fetchall()     # Fetch all the products
-
-    word_table = cur.fetchall()
+    word_table = cur.fetchall()      # Fetch all the products
     query = "SELECT id, name FROM category"
     cur = con.cursor()
     cur.execute(query)
     categories_list = cur.fetchall()      # Fetch categories
+
     con.close()
     print(word_table)  # Print the fetched dictionary_list
     return render_template('dictionary.html', products=word_table, categories=categories_list)      # Render the dictionary.html template with the fetched data
@@ -117,6 +121,21 @@ def render_signup():
 
 
     return render_template('/signup.html')     # Render the signup.html template for GET requests
+
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    session.pop('userid', None)
+    session.pop('firstname', None)
+    return redirect(('render_login'))
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+if __name__ == '__main__':
+        app.run(debug=True)
+
 
 
 app.run(host='0.0.0.0', debug=True) # Run the Flask app
