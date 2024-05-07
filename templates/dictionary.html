@@ -1,17 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}     <!-- Extends the base template named base.html -->
 
 {% block pageheading %}Maori and English Words{% endblock %}
 
 {% block main %}
     <div class="catergories_list-dictionary">
         <ul>
-            {% for catergories in catergories_list %}
-             <li><a href="/dictionary/{{ catergories[0] }}">{{ catergories[1] }}</a> </li>
+            {% for catergories in catergories_list %}                     <!-- Loops through categories_list -->
+             <li><a href="/dictionary/{{ catergories[0] }}">{{ catergories[1] }}</a> </li>   <!-- Creates links for each category -->
             {% endfor %}
         </ul>
 
     </div>
-    <table>
+    <table> <!-- Starts a table -->
       <tr>
         <th>English Word </th>
         <th>Maori Word </th>
@@ -21,15 +21,16 @@
         <th>Level </th>
       </tr>
 
-    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET">
-    <input type="text" name="search" value="{{ search_term }}" placeholder="Search...">
-    <button type="submit">Search</button>
+    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET"> <!-- Form for word search -->
+    <label for="word-search">Enter you chosen word:</label>  <!-- Label for word search input, telling them to enter thier chosen word -->
+    <input type="text" name="search" value="{{ search_term }}" placeholder="Search...">  <!-- Input field for word search -->
+    <button type="submit">Search</button> <!--The submit button wor the search bar-->
     </form>
 
 
     <tbody>
 
-    {% for word in words %}
+    {% for word in words %}            <!-- Loops through words -->
         <tr>
             <td>{{ word[0] }}</td>
             <td>{{ word[1] }}</td>

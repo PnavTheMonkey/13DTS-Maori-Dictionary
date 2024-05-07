@@ -78,9 +78,9 @@ def render_dictionary_page(cat_id):
 
     if search_term:
         query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
-        search_param = f"%{search_term}%"
+        search_param = f"%{search_term}%"    # Define search parameters
         cur = con.cursor()
-        cur.execute(query, (cat_id, search_param, search_param))
+        cur.execute(query, (cat_id, search_param, search_param))    # Execute the query with search parameters
     else:
         cur = con.cursor()
         cur.execute(query, (cat_id,))
@@ -93,8 +93,7 @@ def render_dictionary_page(cat_id):
     catergories_list = cur.fetchall()
     con.close()
 
-    return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term,
-                           cat_id=cat_id)
+    return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term, cat_id=cat_id)
 
 
 @app.route('/signup', methods=['POST', 'GET'])
