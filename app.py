@@ -68,18 +68,33 @@ def render_login():
         return redirect('/')
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
+
 @app.route('/dictionary/<cat_id>')
 def render_dictionary_page(cat_id):
+    search_term = request.args.get('search', '')  # Get the search term from the query parameter
 
-    con = create_connection(DATABASE)  # Create a connection to the SQLite database
-    query = "SELECT english_word, te_reo_word, category, description, user_id, level FROM word_table WHERE cat_id=?"  # Define the SQL query to fetch products based on cat_id
-    cur = con.cursor() # Execute the SQL query
-    cur.execute(query, (cat_id))
-    word_table = cur.fetchall()  # Fetch all the products
+    con = create_connection(DATABASE)
+    query = "SELECT english_word, te_reo_word, category, description, user_id, level FROM word_table WHERE cat_id=?"
+
+    if search_term:
+        query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
+        search_param = f"%{search_term}%"
+        cur = con.cursor()
+        cur.execute(query, (cat_id, search_param, search_param))
+    else:
+        cur = con.cursor()
+        cur.execute(query, (cat_id,))
+
+    word_table = cur.fetchall()
+
+    query = "SELECT id, name FROM catergories_list"
+    cur = con.cursor()
+    cur.execute(query)
+    catergories_list = cur.fetchall()
     con.close()
-    print(word_table)
 
-    return render_template('dictionary.html', words=word_table)    # Render the dictionary.html template with the fetched data
+    return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term,
+                           cat_id=cat_id)
 
 
 @app.route('/signup', methods=['POST', 'GET'])

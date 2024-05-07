@@ -3,6 +3,14 @@
 {% block pageheading %}Maori and English Words{% endblock %}
 
 {% block main %}
+    <div class="catergories_list-dictionary">
+        <ul>
+            {% for catergories in catergories_list %}
+             <li><a href="/dictionary/{{ catergories[0] }}">{{ catergories[1] }}</a> </li>
+            {% endfor %}
+        </ul>
+
+    </div>
     <table>
       <tr>
         <th>English Word </th>
@@ -13,12 +21,11 @@
         <th>Level </th>
       </tr>
 
-    <form action="/dictionary" method="GET">
-            <label for="word-search">Enter you chosen word:</label>
-            <input type="text" id="word-search" name="q" placeholder="Search...">
-            <button type="submit">Search</button>
-            <p></p>
-        </form>
+    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET">
+    <input type="text" name="search" value="{{ search_term }}" placeholder="Search...">
+    <button type="submit">Search</button>
+    </form>
+
 
     <tbody>
 
