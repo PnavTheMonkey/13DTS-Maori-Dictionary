@@ -7,13 +7,13 @@ from flask_bcrypt import Bcrypt
 DATABASE ='C:/Users/Kartik/OneDrive/13DTS/13DTS-Maori-Dictionary/database.db'   # Define the path to the SQLite database file
 
 app = Flask(__name__)    # Create a Flask application instance
-bcrypt = Bcrypt(app)    ## Initialize Bcrypt with the Flask application
+bcrypt = Bcrypt(app)    ## starts Bcrypt with the Flask app
 app.secret_key = "uhb*#1e8hp*9x"    # Set a secret key for the Flask application this is the key for hashed password
 
 
 def create_connection(db_file):       # Function to create a connection to the SQLite database
     try:
-        connection = sqlite3.connect(db_file)       # Attempt to establish a connection to the SQLite database
+        connection = sqlite3.connect(db_file)       # Attempt connection to the SQLite database
         return connection
     except Error as e:
         print(e)           # Print an error message if connection fails
@@ -29,8 +29,7 @@ def is_logged_in(): # Function to check if user is logged in
 
 @app.route('/')
 def render_homepage():     # Render the home.html template
-    return render_template('home.html')      # This print statement will not
-
+    return render_template('home.html')       # This print statement will not
 
     # executed as it comes after the return statement
     print("home")
@@ -38,7 +37,7 @@ def render_homepage():     # Render the home.html template
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
     if is_logged_in():      # Check if user is already logged in.
-        return redirect('/base')
+        return redirect('/logout')
     if request.method == "POST":         # Extract email and password from the form
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
@@ -74,7 +73,7 @@ def render_dictionary_page(cat_id):
     search_term = request.args.get('search', '')  # Get the search term from the query parameter
 
     con = create_connection(DATABASE)
-    query = "SELECT english_word, te_reo_word, category, description, user_id, level FROM word_table WHERE cat_id=?"
+    query = "SELECT * FROM word_table WHERE cat_id=?"
 
     if search_term:
         query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
@@ -92,6 +91,7 @@ def render_dictionary_page(cat_id):
     cur.execute(query)
     catergories_list = cur.fetchall()
     con.close()
+    print(catergories_list)
 
     return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term, cat_id=cat_id)
 
@@ -100,6 +100,7 @@ def render_dictionary_page(cat_id):
 def render_signup():
     if request.method == 'POST':
         print(request.form)
+
         fname = request.form.get('fname').title().strip()   # Extract form data
         lname = request.form.get('lname').title().strip()
         email = request.form.get('email').lower().strip()
@@ -115,7 +116,7 @@ def render_signup():
         con = create_connection(DATABASE)        # Open a connection to the database
         query = "INSERT INTO account_table (fname, lname, email, password) VALUES (?,?,?,?)"
         cur = con.cursor()
-
+        print()
         try:
             cur.execute(query, (fname, lname, email, hashed_password))
         except sqlite3.IntegrityError:

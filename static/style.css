@@ -9,6 +9,8 @@ body {
     background-color: rgba(236, 240, 241, 1.0);
 }
 
+
+
 .container {
     width: 60vw;
     margin: auto;
@@ -40,7 +42,7 @@ h2 {
 }
 
 nav {
-    background-color: rgb(255, 0, 0); /* red */
+    background-color: rgb(243, 0, 0); /* red */
     text-align: center;
     /*color: rgba(52, 152, 219, 1.0);!*pitch black*!*/
     font-size: 1.5rem;
@@ -58,6 +60,8 @@ nav {
     display: inline;
     float: right;
 }
+
+
 
 nav a {
     /*margin:0 0.5rem;*/

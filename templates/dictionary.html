@@ -1,18 +1,19 @@
-{% extends 'base.html' %}     <!-- Extends the base template named base.html -->
+{% extends 'base.html' %}            <!-- Extends the base template named base.html -->
 
-{% block pageheading %}Maori and English Words{% endblock %}
+{% block pageheading %}Maori and English Words{% endblock %}  <!-- The heading -->
 
 {% block main %}
     <div class="catergories_list-dictionary">
         <ul>
-            {% for catergories in catergories_list %}                     <!-- Loops through categories_list -->
-             <li><a href="/dictionary/{{ catergories[0] }}">{{ catergories[1] }}</a> </li>   <!-- Creates links for each category -->
+            {% for catergory in catergories %}                   <!-- Loops through categories_list -->
+             <li><a href="/dictionary/{{ catergories[0] }}">{{ catergories[1] }} </a> </li>   <!-- Creates links for each category -->
             {% endfor %}
         </ul>
 
     </div>
-    <table> <!-- Starts a table -->
+    <table>    <!-- Starts a table -->
       <tr>
+        <th>Id</th>
         <th>English Word </th>
         <th>Maori Word </th>
         <th>Category </th>
@@ -30,7 +31,7 @@
 
     <tbody>
 
-    {% for word in words %}            <!-- Loops through words -->
+    {% for word in words %}  <!-- Loops through words -->
         <tr>
             <td>{{ word[0] }}</td>
             <td>{{ word[1] }}</td>
