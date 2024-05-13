@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, session  #imports the neccesary modules from Flask
 import sqlite3
 from sqlite3 import Error
-from flask_bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt   #import bcrypt module
 
 
 DATABASE ='C:/Users/Kartik/OneDrive/13DTS/13DTS-Maori-Dictionary/database.db'   # Define the path to the SQLite database file
@@ -21,7 +21,7 @@ def create_connection(db_file):       # Function to create a connection to the S
 
 def is_logged_in(): # Function to check if user is logged in
     if session.get("email") is None:
-        print("not logged in ")         # Print message if user is not logged in
+        print("not logged in ")         # Print message if the person is not logged in
         return False
     else:
         print("logged in!")         # Print message if user is logged in
@@ -29,16 +29,16 @@ def is_logged_in(): # Function to check if user is logged in
 
 @app.route('/')
 def render_homepage():     # Render the home.html template
-    return render_template('home.html')       # This print statement will not
+    return render_template("home.html" , logged_in=is_logged_in())       # This print statement will not
 
-    # executed as it comes after the return statement
-    print("home")
+    print("home")  # executed as it comes after the return statement
 
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
     if is_logged_in():      # Check if user is already logged in.
-        return redirect('/logout')
-    if request.method == "POST":         # Extract email and password from the form
+        return redirect('/dictionary/1')
+    print("Logging in")
+    if request.method == "POST":         # gets email and password from the form
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
 
@@ -67,37 +67,10 @@ def render_login():
         return redirect('/')
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
-
-@app.route('/dictionary/<cat_id>')
-def render_dictionary_page(cat_id):
-    search_term = request.args.get('search', '')  # Get the search term from the query parameter
-
-    con = create_connection(DATABASE)
-    query = "SELECT * FROM word_table WHERE cat_id=?"
-
-    if search_term:
-        query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
-        search_param = f"%{search_term}%"    # Define search parameters
-        cur = con.cursor()
-        cur.execute(query, (cat_id, search_param, search_param))    # Execute the query with search parameters
-    else:
-        cur = con.cursor()
-        cur.execute(query, (cat_id,))
-
-    word_table = cur.fetchall()
-
-    query = "SELECT id, name FROM catergories_list"
-    cur = con.cursor()
-    cur.execute(query)
-    catergories_list = cur.fetchall()
-    con.close()
-    print(catergories_list)
-
-    return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term, cat_id=cat_id)
-
-
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
+    if is_logged_in():      # Check if user is already logged in.
+        return redirect('/dictionary/1')
     if request.method == 'POST':
         print(request.form)
 
@@ -129,18 +102,45 @@ def render_signup():
         return redirect("\login")         # Redirect to login page after successful signup
 
 
-    return render_template('/signup.html')     # Render the signup.html template for GET requests
+    return render_template('/signup.html' , logged_in=is_logged_in())     # Render the signup.html template for GET requests
+
+@app.route('/dictionary/<cat_id>')
+def render_dictionary_page(cat_id):
+    search_term = request.args.get('search', '')  # Get the search term from the query parameter
+    con = create_connection(DATABASE)
+    query = "SELECT * FROM word_table WHERE cat_id=?"
+
+    if search_term:
+        query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
+        search_param = f"%{search_term}%"    # Define search parameters
+        cur = con.cursor()
+        cur.execute(query, (cat_id, search_param, search_param))    # Execute the query with search parameters
+    else:
+        cur = con.cursor()
+        cur.execute(query, (cat_id,))
+
+    word_table = cur.fetchall()
+
+    query = "SELECT id, name FROM catergories_list"
+    cur = con.cursor()
+    cur.execute(query)
+    catergories_list = cur.fetchall()
+    con.close()
+    print(catergories_list)
+
+    return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term, cat_id=cat_id , logged_in=is_logged_in())
 
 @app.route('/logout')
 def logout():
-    session.pop('email', None)
-    session.pop('userid', None)
-    session.pop('firstname', None)
-    return redirect(('render_login'))
+    print(list(session.keys()))
+    [session.pop(key) for key in list(session.keys())]
+    print(list(session.keys()))
+    return redirect('/?message=See+you+next+time!')
+
 
 @app.route('/admin')
 def admin():
-    return render_template('admin.html')
+    return render_template('admin.html' , logged_in=is_logged_in())
 
 if __name__ == '__main__':
         app.run(debug=True)
@@ -151,4 +151,3 @@ app.run(host='0.0.0.0', debug=True) # Run the Flask app
 
 
 
-   
