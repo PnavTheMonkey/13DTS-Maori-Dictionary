@@ -142,6 +142,7 @@ def logout():
 def render_admin():
     if not is_logged_in():        #needs to be logged in to access the admin
         return redirect('/?message=Need+to+be+logged+in')
+
     return render_template('admin.html' , logged_in=is_logged_in())
 
 
@@ -161,6 +162,21 @@ def add_word():
     con.close()
 
     return redirect("/admin")
+
+
+@app.route('/words_detail/<word_id>')
+def render_words_detail(word_id):
+    con = create_connection(DATABASE)
+    query = "SELECT * " \
+            "FROM words" \
+            "JOIN categories " \
+            "WHERE words_id=?"
+    cur = con.cursor()
+    cur.execute(query, (word_id, ))
+    all_word_info = cur.fetchall
+    con.close
+    print(all_word_info)
+
 
 if __name__ == '__main__':
         app.run(debug=True)

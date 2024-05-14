@@ -1,0 +1,50 @@
+{% extends 'base.html' %}            <!-- Extends the base template named base.html -->
+
+{% block pageheading %}Dictionary{% endblock %}  <!-- The heading -->
+
+{% block main %}
+    <div class="catergories_list-dictionary">
+        <ul>
+            {% for catergory in catergories %}                   <!-- Loops through categories_list -->
+             <li>
+                 <a href="/dictionary/{{ catergory[0] }}">{{ catergory[1] }} </a>
+             </li>   <!-- Creates links for each category -->
+            {% endfor %}
+        </ul>
+
+    </div>
+    <table>    <!-- Starts a table -->
+      <tr>
+        <th>Id</th>
+        <th>English Word </th>
+        <th>Maori Word </th>
+        <th>Category </th>
+        <th>Description </th>
+        <th>User Id</th>
+        <th>Level </th>
+      </tr>
+
+    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET"> <!-- Form for word search -->
+    <label for="word-search">Enter you chosen word:</label>  <!-- Label for word search input, telling them to enter thier chosen word -->
+    <input type="text" name="search" value="{{ search_term }}" placeholder="Search...">  <!-- Input field for word search -->
+    <button type="submit">Search</button> <!--The submit button wor the search bar-->
+    </form>
+
+
+    <tbody>
+
+    {% for word in words %}  <!-- Loops through words -->
+        <tr>
+            <td>{{ word[0] }}</td>
+            <td>{{ word[1] }}</td>
+            <td>{{ word[2] }}</td>
+            <td>{{ word[3] }}</td>
+            <td>{{ word[4] }}</td>
+            <td>{{ word[5] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+
+    </table>
+{% endblock %}
