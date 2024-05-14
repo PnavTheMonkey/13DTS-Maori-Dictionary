@@ -174,10 +174,21 @@ a, a:visited {
 
 table {
     border-collapse: collapse;
+
 }
+
+ a:hover {
+     color: #0077ff;
+ }
 
 .cart-table > thead {
     font-weight: bold;
+    width: 75%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+
+
 }
 
 .cart-table td {

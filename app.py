@@ -178,6 +178,37 @@ def render_words_detail(word_id):
     print(all_word_info)
 
 
+@app.route('/delete_word', methods=['POST'])
+def delete_word():
+    if not is_logged_in():
+        return redirect("/login")
+
+    english_word = request.form['english_word']
+    te_reo_word = request.form['te_reo_word']
+
+    con = create_connection(DATABASE)
+    cur = con.cursor()
+    cur.execute("DELETE FROM word_table WHERE english_word = ? AND te_reo_word = ?", (english_word, te_reo_word))
+    con.commit()
+    con.close()
+
+    return redirect("/admin")
+
+@app.route('/add_word', methods=['POST'])
+def add_word_route():
+    if not is_logged_in():
+        return redirect("/login")
+
+    english_word = request.form['english_word']
+    te_reo_word = request.form['te_reo_word']
+    cat_id = request.form['category']
+
+    con = create_connection(DATABASE)
+    cur = con.cursor()
+    cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)", (english_word, te_reo_word, cat_id))
+    con.commit()
+    con.close()
+
 if __name__ == '__main__':
         app.run(debug=True)
 
