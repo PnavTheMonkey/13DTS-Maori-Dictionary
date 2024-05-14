@@ -124,23 +124,43 @@ def render_dictionary_page(cat_id):
     query = "SELECT id, name FROM catergories_list"
     cur = con.cursor()
     cur.execute(query)
-    catergories_list = cur.fetchall()
+    catergory_list = cur.fetchall()
     con.close()
-    print(catergories_list)
+    print(word_table, catergory_list)
 
-    return render_template('dictionary.html', words=word_table, catergories=catergories_list, search_term=search_term, cat_id=cat_id , logged_in=is_logged_in())
+    return render_template('dictionary.html', words=word_table, catergories=catergory_list, search_term=search_term, cat_id=cat_id , logged_in=is_logged_in())
 
 @app.route('/logout')
 def logout():
     print(list(session.keys()))
     [session.pop(key) for key in list(session.keys())]
     print(list(session.keys()))
-    return redirect('/?message=See+you+next+time!')
+    return redirect('/?message=Later+cuz!')
 
 
 @app.route('/admin')
-def admin():
+def render_admin():
+    if not is_logged_in():        #needs to be logged in to access the admin
+        return redirect('/?message=Need+to+be+logged+in')
     return render_template('admin.html' , logged_in=is_logged_in())
+
+
+@app.route('/add_word', methods=['POST'])
+def add_word():
+    if not is_logged_in():
+        return redirect("/login")
+
+    english_word = request.form['english_word']
+    te_reo_word = request.form['te_reo_word']
+    cat_id = request.form['category']
+
+    con = create_connection(DATABASE)
+    cur = con.cursor()
+    cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)", (english_word, te_reo_word, cat_id))
+    con.commit()
+    con.close()
+
+    return redirect("/admin")
 
 if __name__ == '__main__':
         app.run(debug=True)

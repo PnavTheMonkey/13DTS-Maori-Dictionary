@@ -6,7 +6,9 @@
     <div class="catergories_list-dictionary">
         <ul>
             {% for catergory in catergories %}                   <!-- Loops through categories_list -->
-             <li><a href="/dictionary/{{ catergories[0] }}">{{ catergories[1] }} </a> </li>   <!-- Creates links for each category -->
+             <li>
+                 <a href="/dictionary/{{ catergory[0] }}">{{ catergory[1] }} </a>
+             </li>   <!-- Creates links for each category -->
             {% endfor %}
         </ul>
 
