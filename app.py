@@ -21,7 +21,7 @@ def create_connection(db_file):       # Function to create a connection to the S
 
 def is_logged_in(): # Function to check if user is logged in
     if session.get("email") is None:
-        print("not logged in ")         # Print message if the person is not logged in
+        print("not logged in ")         # P1 rint message if the person is not logged in
         return False
     else:
         print("logged in!")         # Print message if user is logged in
@@ -79,6 +79,7 @@ def render_signup():
         email = request.form.get('email').lower().strip()
         password = request.form.get('password')
         password2 = request.form.get('password2')
+        teacher = request.form.get('role')
 
         if password != password2:            # Check if passwords match
             return redirect("\signup?error='Passwords+do+not+match")
@@ -87,11 +88,11 @@ def render_signup():
 
         hashed_password = bcrypt.generate_password_hash(password)         # Hash the password
         con = create_connection(DATABASE)        # Open a connection to the database
-        query = "INSERT INTO account_table (fname, lname, email, password) VALUES (?,?,?,?)"
+        query = "INSERT INTO account_table (fname, lname, email, password, teacher) VALUES (?,?,?,?,?)"
         cur = con.cursor()
         print()
         try:
-            cur.execute(query, (fname, lname, email, hashed_password))
+            cur.execute(query, (fname, lname, email, hashed_password, teacher))
         except sqlite3.IntegrityError:
             con.close()
             return redirect("\signup?error='Email is already in use.")
@@ -143,7 +144,7 @@ def render_admin():
     if not is_logged_in():        #needs to be logged in to access the admin
         return redirect('/?message=Need+to+be+logged+in')
 
-    return render_template('admin.html' , logged_in=is_logged_in())
+    return render_template('admin.html' , logged_in=is_logged_in(), teacher= render_admin)
 
 
 @app.route('/add_word', methods=['POST'])
@@ -164,12 +165,11 @@ def add_word():
     return redirect("/admin")
 
 
-@app.route('/words_detail/<word_id>')
-def render_words_detail(word_id):
+@app.route('/words_info/<word_id>')
+def render_words_info(word_id):
     con = create_connection(DATABASE)
     query = "SELECT * " \
-            "FROM words" \
-            "JOIN categories " \
+            "FROM word_table" \
             "WHERE words_id=?"
     cur = con.cursor()
     cur.execute(query, (word_id, ))
@@ -190,9 +190,6 @@ def delete_word():
     cur = con.cursor()
     cur.execute("DELETE FROM word_table WHERE english_word = ? AND te_reo_word = ?", (english_word, te_reo_word))
     con.commit()
-    con.close()
-
-    return redirect("/admin")
 
 @app.route('/add_word', methods=['POST'])
 def add_word_route():
@@ -208,6 +205,8 @@ def add_word_route():
     cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)", (english_word, te_reo_word, cat_id))
     con.commit()
     con.close()
+
+    return redirect("/admin")
 
 if __name__ == '__main__':
         app.run(debug=True)
