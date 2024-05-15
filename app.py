@@ -73,7 +73,7 @@ def render_login():
         session['firstname'] = first_name
         print(session)
         return redirect('/')   #returns them home once logged in
-    return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
+    return render_template("login.html", logged_in=is_logged_in())      # Render the login page for GET requests
 
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
@@ -91,10 +91,10 @@ def render_signup():
 
         if password != password2:            # Check if passwords match
             return redirect("\signup?error='Passwords+do+not+match")
-            print("Passwords do not match")
+
         if len(password) < 8:         # Check if password is at least 8 characters long
             return redirect("\signup?error='Password+must+be+at+least+8+characters")
-            print("Password be at least 8 characters")
+
 
 
         hashed_password = bcrypt.generate_password_hash(password)         # Hash the password

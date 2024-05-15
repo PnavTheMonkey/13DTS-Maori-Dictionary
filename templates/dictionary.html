@@ -31,25 +31,19 @@
             </tr>
         </thead>
 
-
         <tbody>
             {% for word in words %}
                 <tr>
-                    <td><a href="/words_info{{ word[0] }}">{{ word[1] }}</td>
-                    <td>{{ word[2] }}</td>]
+                    <td><a href="/words_info{{ word[0] }}">{{ word[1] }}</a></td>
+                    <td>{{ word[2] }}</td>
                     <td>{{ word[3] }}</td>
                     <td>{{ word[4] }}</td>
                     <td>{{ word[5] }}</td>
                     <td>{{ word[6] }}</td>
-                    <td>{{ word[7] }}</td>
-                    <td>{{ word[8] }}</td>
-                    <td>{{ word[9] }}</td>
-
+                    <td>
+                        <img src="static/images/{{ word[9] }}.jpg" alt="{{ word[1] }}" style="max-width: 100px;">
+                    </td>
                 </tr>
-                <div class="product-box-image">
-                    <img src="static/images/{{ word[9] }}.jpg">
-
-                </div>
             {% endfor %}
         </tbody>
     </table>
