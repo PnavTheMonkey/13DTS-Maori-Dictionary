@@ -27,18 +27,29 @@
                 <th>Description</th>
                 <th>User Id</th>
                 <th>Level</th>
+                <th>Image</th>
             </tr>
         </thead>
+
+
         <tbody>
             {% for word in words %}
                 <tr>
-                    <td><a href="/words_detail{{ word[0] }}">{{ word[1] }}</td>
+                    <td><a href="/words_info{{ word[0] }}">{{ word[1] }}</td>
                     <td>{{ word[2] }}</td>]
                     <td>{{ word[3] }}</td>
                     <td>{{ word[4] }}</td>
                     <td>{{ word[5] }}</td>
                     <td>{{ word[6] }}</td>
+                    <td>{{ word[7] }}</td>
+                    <td>{{ word[8] }}</td>
+                    <td>{{ word[9] }}</td>
+
                 </tr>
+                <div class="product-box-image">
+                    <img src="static/images/{{ word[9] }}.jpg">
+
+                </div>
             {% endfor %}
         </tbody>
     </table>

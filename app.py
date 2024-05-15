@@ -21,10 +21,18 @@ def create_connection(db_file):       # Function to create a connection to the S
 
 def is_logged_in(): # Function to check if user is logged in
     if session.get("email") is None:
-        print("not logged in ")         # P1 rint message if the person is not logged in
+        print("not logged in ")         # P mrint message if the person is not logged in
         return False
     else:
         print("logged in!")         # Print message if user is logged in
+        return True
+
+def is_logged_in_as_teacher(): # Function to check if user is logged in
+    if session.get("email") is None:
+        print("not logged in as teacher")         # P1 rint message if the person is not logged in
+        return False
+    else:
+        print("logged in as teacher")         # Print message if user is logged in
         return True
 
 @app.route('/')
@@ -64,7 +72,7 @@ def render_login():
         session['userid'] = user_id
         session['firstname'] = first_name
         print(session)
-        return redirect('/')
+        return redirect('/')   #returns them home once logged in
     return render_template("login.html", logged_in = is_logged_in())      # Render the login page for GET requests
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -83,8 +91,11 @@ def render_signup():
 
         if password != password2:            # Check if passwords match
             return redirect("\signup?error='Passwords+do+not+match")
+            print("Passwords do not match")
         if len(password) < 8:         # Check if password is at least 8 characters long
             return redirect("\signup?error='Password+must+be+at+least+8+characters")
+            print("Password be at least 8 characters")
+
 
         hashed_password = bcrypt.generate_password_hash(password)         # Hash the password
         con = create_connection(DATABASE)        # Open a connection to the database
@@ -134,7 +145,7 @@ def render_dictionary_page(cat_id):
 @app.route('/logout')
 def logout():
     print(list(session.keys()))
-    [session.pop(key) for key in list(session.keys())]
+    [session.pop(key) for key in list(session.keys())]   #removes the stuff from session
     print(list(session.keys()))
     return redirect('/?message=Later+cuz!')
 
@@ -144,7 +155,7 @@ def render_admin():
     if not is_logged_in():        #needs to be logged in to access the admin
         return redirect('/?message=Need+to+be+logged+in')
 
-    return render_template('admin.html' , logged_in=is_logged_in(), teacher= render_admin)
+    return render_template('admin.html' , logged_in=is_logged_in())
 
 
 @app.route('/add_word', methods=['POST'])
@@ -171,6 +182,7 @@ def render_words_info(word_id):
     query = "SELECT * " \
             "FROM word_table" \
             "WHERE words_id=?"
+
     cur = con.cursor()
     cur.execute(query, (word_id, ))
     all_word_info = cur.fetchall
