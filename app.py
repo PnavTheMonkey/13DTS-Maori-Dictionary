@@ -27,13 +27,23 @@ def is_logged_in(): # Function to check if user is logged in
         print("logged in!")         # Print message if user is logged in
         return True
 
-def is_logged_in_as_teacher(): # Function to check if user is logged in
+def is_logged_in_as_teacher():
     if session.get("email") is None:
-        print("not logged in as teacher")         # P1 rint message if the person is not logged in
+        print("not logged in as teacher")
         return False
     else:
-        print("logged in as teacher")         # Print message if user is logged in
-        return True
+        email = session.get("email")
+        con = create_connection(DATABASE)
+        cur = con.cursor()
+        cur.execute("SELECT teacher FROM account_table WHERE email=?", (email,))
+        user_data = cur.fetchone()
+        con.close()
+        if user_data and user_data[0]:  # Check if the user is a teacher
+            print("logged in as teacher")
+            return True
+        else:
+            print("not logged in as teacher")
+            return False
 
 @app.route('/')
 def render_homepage():     # Render the home.html template
@@ -152,10 +162,13 @@ def logout():
 
 @app.route('/admin')
 def render_admin():
-    if not is_logged_in():        #needs to be logged in to access the admin
-        return redirect('/?message=Need+to+be+logged+in')
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/login?error=Need+to+be+logged+in')
+    elif not is_logged_in_as_teacher():  # Check if user is logged in as a teacher
+        return redirect('/?error=Only+teachers+can+access+the+admin+page')
 
-    return render_template('admin.html' , logged_in=is_logged_in())
+    return render_template('admin.html', logged_in=is_logged_in())
+
 
 
 @app.route('/add_word', methods=['POST'])
