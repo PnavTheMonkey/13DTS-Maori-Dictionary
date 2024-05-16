@@ -45,6 +45,7 @@ def is_logged_in_as_teacher():
             print("not logged in as teacher")
             return False
 
+
 @app.route('/')
 def render_homepage():     # Render the home.html template
     return render_template("home.html" , logged_in=is_logged_in())       # This print statement will not
@@ -189,19 +190,20 @@ def add_word():
     return redirect("/admin")
 
 
-@app.route('/words_info/<word_id>')
-def render_words_info(word_id):
+@app.route('/words_info/<id>')
+def render_words_info(id):
     con = create_connection(DATABASE)
     query = "SELECT * " \
             "FROM word_table" \
             "WHERE words_id=?"
 
     cur = con.cursor()
-    cur.execute(query, (word_id, ))
+    cur.execute(query, (id, ))
+
     all_word_info = cur.fetchall
     con.close
     print(all_word_info)
-
+    return render_template("words_info")
 
 @app.route('/delete_word', methods=['POST'])
 def delete_word():

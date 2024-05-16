@@ -34,7 +34,7 @@
         <tbody>
             {% for word in words %}
                 <tr>
-                    <td><a href="/words_info{{ word[0] }}">{{ word[1] }}</a></td>
+                    <td><a href="/words_info/{{ word[0] }}">{{ word[1] }}</a></td>
                     <td>{{ word[2] }}</td>
                     <td>{{ word[3] }}</td>
                     <td>{{ word[4] }}</td>
@@ -47,5 +47,9 @@
                 </tr>
             {% endfor %}
         </tbody>
+
     </table>
+        <footer>
+          <p>&copy; Pranav Mehta 2024</p>
+        </footer>
 {% endblock %}
