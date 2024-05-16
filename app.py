@@ -235,9 +235,21 @@ def add_word_route():
 
     return redirect("/admin")
 
+@app.route('/category_delete', methods=['POST', 'GET'])
+def render_category_delete():
+    if not is_logged_in():
+        return redirect('//?message=Need+to+be+logged+in+')
+    if request.method == 'POST':
+        category = request.form.get('cat_id')
+        print(category)
+        category = category.split(", ")
+        cat_id = category[0]
+        cat_name = category[1]
+        return render_template("category_delete.html", id=cat_id, name=cat_name, type="categories")
+
+
 if __name__ == '__main__':
         app.run(debug=True)
-
 
 
 app.run(host='0.0.0.0', debug=True) # Run the Flask app
