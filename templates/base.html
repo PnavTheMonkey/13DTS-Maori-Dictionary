@@ -17,11 +17,10 @@
         <div class="navbar-links">
             <a href="/">Home</a>
             <a href="/dictionary/1">Dictionary</a>
-            {% if logged_in %}
+            {% if logged_in %}  <!-- Links displayed if the user is logged in -->
             <a href="/logout">Logout</a>
             <a href="/admin">Admin</a>
-
-            {% else %}
+            {% else %} <!-- Links displayed if the user is not logged in -->
             <a href="/login"> Login</a>
             <a href="/signup"> Signup</a>
             {% endif %}

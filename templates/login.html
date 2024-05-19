@@ -1,42 +1,42 @@
 {% extends "base.html" %}
-
-{% block pageheading %}Login to your account{% endblock %}
-
+<!-- Extends the base HTML template -->
+{% block pageheading %}Login to your account{% endblock %} <!-- Sets the content for the 'pageheading' block to display the heading-->
 {% block main %}
 
     <form class="dataForm" method="post">
-        <div class="form-group">
+        <div class="form-group"> <!-- Creates a form with the class 'dataForm' and sets the method to 'post' -->
 
         </div>
 
         <div class="form-group">
         </div>
 
-        <div class="form-group">
-            <div class="form-label"><label for="email">Email Address:</label></div>
-            <div class="form-element"><input type="email" name="email" id="email" required></div>
+        <div class="form-group"> <!-- Form group for the email field -->
+            <div class="form-label"><label for="email">Email Address:</label></div> <!-- Label for the email input field -->
+            <div class="form-element"><input type="email" name="email" id="email" required></div> <!-- Email input field, required for form submission -->
+        </div>
+
+        <div class="form-group">    <!-- Form group for the password field -->
+            <div class="form-label"><label for="password">Password:</label></div>  <!-- Label for the password input field -->
+            <div class="form-element"><input type="password" name="password" id="password" required></div><!-- Password input field, required for form submission -->
         </div>
 
         <div class="form-group">
-            <div class="form-label"><label for="password">Password:</label></div>
-            <div class="form-element"><input type="password" name="password" id="password" required></div>
-        </div>
 
-        <div class="form-group">
-
-        </div>
-
-        <div class="form-group">
-            <div></div>
-            <div class="form-element"><input type="reset"></div>
         </div>
 
         <div class="form-group">
             <div></div>
-            <div class="form-element"><input type="submit"></div>
+            <div class="form-element"><input type="reset"></div>  <!-- Reset button to clear the form fields -->
         </div>
-    </form>
-<p><br><br><br>Don't have an account? Click <a href="/signup">Sign Up</a>.</p>
+
+        <div class="form-group">
+            <div></div>
+            <div class="form-element"><input type="submit"></div> <!-- Submit button to submit the form -->
+
+        </div>
+    </form> <!-- End of the the form -->
+<p><br><br><br>Don't have an account? Click <a href="/signup">Sign Up</a>.</p>  <!--link to the sign-up page for users who don't have an account -->
 
 {% endblock %}
-
+<!-- Ends the 'main' content block -->

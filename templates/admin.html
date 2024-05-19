@@ -68,6 +68,18 @@
         <textarea id="definition" name="definition"></textarea><br><br>
         <input type="submit" value="Delete Word">
     </form>
+
+
+    <h2>Delete Category</h2>
+    <form action="/category_delete" method="post">
+        <label for="category">Category:</label><br>
+        <select id="category" name="cat_id">
+            {% for category in categories %}
+            <option value="{{ category[0] }}, {{ category[1] }}">{{ category[1] }}</option>
+            {% endfor %}
+        </select><br>
+        <input type="submit" value="Delete Category">
+    </form>
 </body>
 </html>
 

@@ -1,26 +1,27 @@
-{% extends 'base.html' %}
-{% block pageheading %}Maori and English Words{% endblock %}
+{% extends 'base.html' %} <!--extend to base HTmL, for structure and stylesheet -->
 
-{% block main %}
+{% block pageheading %}Maori and English Words{% endblock %} <!-- Sets the content for the pageheading block to display "Maori and English Words" -->
+
+{% block main %} <!-- Begins the 'main' content block -->
     <div class="catergories_list-dictionary">
         <ul>
-            {% for catergory in catergories %}
+            {% for catergory in catergories %} <!-- Loop through each category in catergories to create a list item with a link -->
                 <li>
-                    <a href="/dictionary/{{ catergory[0] }}">{{ catergory[1] }}</a>
+                    <a href="/dictionary/{{ catergory[0] }}">{{ catergory[1] }}</a>  <!-- Link to a dictionary page filtered by the category ID -->
                 </li>
             {% endfor %}
         </ul>
     </div>
 
-    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET">
+    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET">  <!-- Form to search for a word in the dictionary, using GET method -->
         <label for="word-search">Enter your chosen word:</label>
-        <input type="text" name="search" value="{{ search_term }}" placeholder="Search...">
-        <button type="submit">Search</button>
+        <input type="text" name="search" value="{{ search_term }}" placeholder="Search..."> <!-- Text input field for the search term and pre-filled with search_term-->
+        <button type="submit">Search</button>    <!-- Submit button to send the search query -->
     </form>
 
     <table>
         <thead>
-            <tr>
+            <tr>  <!-- Table headers for the dictionary words and their details -->
                 <th>English Word</th>
                 <th>Maori Word</th>
                 <th>Category</th>
@@ -32,8 +33,8 @@
         </thead>
 
         <tbody>
-            {% for word in words %}
-                <tr>
+            {% for word in words %} <!-- Loop through each word in 'words' to create a table row with the word details -->
+                <tr> <!-- Link to the word information page -->
                     <td><a href="/words_info/{{ word[0] }}">{{ word[1] }}</a></td>
                     <td>{{ word[2] }}</td>
                     <td>{{ word[3] }}</td>
@@ -42,7 +43,7 @@
                     <td>{{ word[6] }}</td>
 
                     <td>
-                        <img src="static/images/{{ word[9] }}.jpg" alt="{{ word[1] }}" style="max-width: 100px;">
+                        <img src="static/images/{{ word[9] }}.jpg" alt="{{ word[1] }}" style="max-width: 100px;"> <!-- Image associated with the word, with a max width of 100px -->
                     </td>
                 </tr>
             {% endfor %}
@@ -50,6 +51,6 @@
 
     </table>
         <footer>
-          <p>&copy; Pranav Mehta 2024</p>
+          <p>&copy; Pranav Mehta 2024</p> <!-- Footer section with copyright information -->
         </footer>
 {% endblock %}

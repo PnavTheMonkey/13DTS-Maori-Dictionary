@@ -238,7 +238,7 @@ def add_word_route():
 @app.route('/category_delete', methods=['POST', 'GET'])
 def render_category_delete():
     if not is_logged_in():
-        return redirect('//?message=Need+to+be+logged+in+')
+        return redirect('/?message=Need+to+be+logged+in+')
     if request.method == 'POST':
         category = request.form.get('cat_id')
         print(category)
@@ -246,6 +246,20 @@ def render_category_delete():
         cat_id = category[0]
         cat_name = category[1]
         return render_template("category_delete.html", id=cat_id, name=cat_name, type="categories")
+    return render_template("admin.html", logged_in=is_logged_in())
+
+@app.route('/delete_category_confirm/<int:id>')
+def delete_category_confirm(id):
+    if not is_logged_in():
+        return redirect('/?message=Need+to+be+logged+in+')
+    con = create_connection(DATABASE)
+    cur = con.cursor()
+    cur.execute("DELETE FROM catergories_list WHERE id = ?", (id,))
+    con.commit()
+    con.close()
+    return redirect('/admin?message=Category+deleted')
+
+
 
 
 if __name__ == '__main__':
