@@ -1,38 +1,34 @@
-{% extends 'base.html' %}            <!-- Extends the base template named base.html -->
+{% extends 'base.html' %}
 
-{% block pageheading %}Dictionary{% endblock %}  <!-- The heading -->
+{% block pageheading %}Word Information{% endblock %}
 
 {% block main %}
     <div class="catergories_list-dictionary">
         <ul>
-            {% for catergory in catergories %}                   <!-- Loops through categories_list -->
+            {% for category in categories %}
              <li>
-                 <a href="/dictionary/{{ catergory[0] }}">{{ catergory[1] }} </a>
-             </li>   <!-- Creates links for each category -->
+                 <a href="/dictionary/{{ category[0] }}">{{ category[1] }} </a>
+             </li>
             {% endfor %}
         </ul>
-
     </div>
-    <table>    <!-- Starts a table -->
-      <tr>
-        <th>Id</th>
-        <th>English Word </th>
-        <th>Maori Word </th>
-        <th>Category </th>
-        <th>Description </th>
-        <th>User Id</th>
-        <th>Level </th>
-      </tr>
 
-    <form action="{{ url_for('render_dictionary_page', cat_id=cat_id) }}" method="GET"> <!-- Form for word search -->
-    <label for="word-search">Enter you chosen word:</label>  <!-- Label for word search input, telling them to enter thier chosen word -->
-    <input type="text" name="search" value="{{ search_term }}" placeholder="Search...">  <!-- Input field for word search -->
-    <button type="submit">Search</button> <!--The submit button wor the search bar-->
-    </form>
 
-    <tbody>
 
-    {% for word in words %}  <!-- Loops through words -->
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>English Word</th>
+          <th>Maori Word</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>User Id</th>
+          <th>Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for word in words %}
         <tr>
             <td>{{ word[0] }}</td>
             <td>{{ word[1] }}</td>
@@ -41,9 +37,24 @@
             <td>{{ word[4] }}</td>
             <td>{{ word[5] }}</td>
         </tr>
-    {% endfor %}
-    </tbody>
-
-
+        {% endfor %}
+      </tbody>
     </table>
+
+    {% if all_word_info %}
+        <div class="word-info">
+
+            <ul>
+                {% for word_info in all_word_info %}
+                    <li>Id: {{ word_info[0] }}</li>
+                    <li>English Word: {{ word_info[1] }}</li>
+                    <li>Maori Word: {{ word_info[2] }}</li>
+                    <li>Category: {{ word_info[3] }}</li>
+                    <li>Description: {{ word_info[4] }}</li>
+                    <li>User Id: {{ word_info[5] }}</li>
+                    <li>Level: {{ word_info[6] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 {% endblock %}

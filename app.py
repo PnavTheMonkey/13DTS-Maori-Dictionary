@@ -179,17 +179,15 @@ def render_admin():
 @app.route('/words_info/<id>')
 def render_words_info(id):
     con = create_connection(DATABASE)
-    query = "SELECT * " \
-            "FROM word_table" \
-            "WHERE words_id=?"
+    query = "SELECT * FROM word_table WHERE id=?"
 
     cur = con.cursor()
-    cur.execute(query, (id, ))
+    cur.execute(query, (id,))
 
-    all_word_info = cur.fetchall
-    con.close
+    all_word_info = cur.fetchall()
+    con.close()
     print(all_word_info)
-    return render_template("words_info")
+    return render_template("words_info.html", all_word_info=all_word_info)
 
 @app.route('/delete_word', methods=['POST'])
 def delete_word():
@@ -203,6 +201,24 @@ def delete_word():
     cur = con.cursor()
     cur.execute("DELETE FROM word_table WHERE english_word = ? AND te_reo_word = ?", (english_word, te_reo_word))
     con.commit()
+    con.close()
+
+    return redirect("/admin")
+
+
+
+@app.route('/delete_word_confirmed/<int:cat_id>')
+def delete_word_confirmed(cat_id):
+    if not is_logged_in():
+        return redirect('/?message=Need+to+be+logged+in')
+
+    con = create_connection(DATABASE)
+    cur = con.cursor()
+    cur.execute("DELETE FROM word_table WHERE id = ?", (cat_id,))
+    con.commit()
+    con.close()
+
+    return redirect("/admin")
 
 @app.route('/add_word', methods=['POST'])
 def add_word_route():
@@ -260,14 +276,12 @@ def category_confirm_delete(cat_id):
         return redirect('/?message=Need+to+be+logged+in')
 
     con = create_connection(DATABASE)
-    query = "DELETE FROM categories_list WHERE id = ?"
     cur = con.cursor()
-    cur.execute(query, (cat_id,))
+    cur.execute("DELETE FROM categories_list WHERE id = ?", (cat_id,))
     con.commit()
     con.close()
 
     return redirect("/admin")
-
 
 if __name__ == '__main__':
         app.run(debug=True)
