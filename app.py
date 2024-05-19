@@ -45,6 +45,8 @@ def is_logged_in_as_teacher():
             print("not logged in as teacher")
             return False
 
+def open_database(db_path):
+    return sqlite3.connect(db_path)
 
 @app.route('/')
 def render_homepage():     # Render the home.html template
@@ -170,26 +172,6 @@ def render_admin():
 
     return render_template('admin.html', logged_in=is_logged_in())
 
-
-
-@app.route('/add_word', methods=['POST'])
-def add_word():
-    if not is_logged_in():
-        return redirect("/login")
-
-    english_word = request.form['english_word']
-    te_reo_word = request.form['te_reo_word']
-    cat_id = request.form['category']
-
-    con = create_connection(DATABASE)
-    cur = con.cursor()
-    cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)", (english_word, te_reo_word, cat_id))
-    con.commit()
-    con.close()
-
-    return redirect("/admin")
-
-
 @app.route('/words_info/<id>')
 def render_words_info(id):
     con = create_connection(DATABASE)
@@ -235,18 +217,21 @@ def add_word_route():
 
     return redirect("/admin")
 
-@app.route('/category_delete', methods=['POST', 'GET'])
-def render_category_delete():
+@app.route('/category_add', methods=['POST'])
+def category_add():
     if not is_logged_in():
         return redirect('/?message=Need+to+be+logged+in+')
     if request.method == 'POST':
-        category = request.form.get('cat_id')
-        print(category)
-        category = category.split(", ")
-        cat_id = category[0]
-        cat_name = category[1]
-        return render_template("category_delete.html", id=cat_id, name=cat_name, type="categories")
-    return render_template("admin.html", logged_in=is_logged_in())
+        print(request.form)
+        cat_name = request.form.get('name').strip()
+        print(cat_name)
+        con = open_database(DATABASE)
+        query = "INSERT INTO catergories_list ('name') VALUES (?)"
+        cur = con.cursor()
+        cur.execute(query, (cat_name, ))
+        con.commit()
+        con.close()
+        return redirect('/admin')
 
 @app.route('/delete_category_confirm/<int:id>')
 def delete_category_confirm(id):
