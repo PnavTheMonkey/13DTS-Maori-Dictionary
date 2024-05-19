@@ -45,8 +45,6 @@ def is_logged_in_as_teacher():
             print("not logged in as teacher")
             return False
 
-def open_database(db_path):
-    return sqlite3.connect(db_path)
 
 @app.route('/')
 def render_homepage():     # Render the home.html template
@@ -115,6 +113,7 @@ def render_signup():
         query = "INSERT INTO account_table (fname, lname, email, password, teacher) VALUES (?,?,?,?,?)"
         cur = con.cursor()
         print()
+
         try:
             cur.execute(query, (fname, lname, email, hashed_password, teacher))
         except sqlite3.IntegrityError:
@@ -169,8 +168,13 @@ def render_admin():
         return redirect('/login?error=Need+to+be+logged+in')
     elif not is_logged_in_as_teacher():  # Check if user is logged in as a teacher
         return redirect('/?error=Only+teachers+can+access+the+admin+page')
-
-    return render_template('admin.html', logged_in=is_logged_in())
+    con = create_connection(DATABASE)
+    query = "SELECT * FROM catergories_list"
+    cur = con.cursor()
+    cur.execute(query)
+    catergory_list = cur.fetchall
+    con.close
+    return render_template('admin.html', logged_in=is_logged_in(), catergories=catergory_list)
 
 @app.route('/words_info/<id>')
 def render_words_info(id):
@@ -208,7 +212,7 @@ def add_word_route():
     english_word = request.form['english_word']
     te_reo_word = request.form['te_reo_word']
     cat_id = request.form['category']
-
+    print(request.form)
     con = create_connection(DATABASE)
     cur = con.cursor()
     cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)", (english_word, te_reo_word, cat_id))
@@ -225,7 +229,7 @@ def category_add():
         print(request.form)
         cat_name = request.form.get('name').strip()
         print(cat_name)
-        con = open_database(DATABASE)
+        con = create_connection(DATABASE)
         query = "INSERT INTO catergories_list ('name') VALUES (?)"
         cur = con.cursor()
         cur.execute(query, (cat_name, ))
@@ -233,18 +237,36 @@ def category_add():
         con.close()
         return redirect('/admin')
 
-@app.route('/delete_category_confirm/<int:id>')
-def delete_category_confirm(id):
+
+@app.route('/category_delete', methods=['POST'])
+def render_category_delete():
     if not is_logged_in():
-        return redirect('/?message=Need+to+be+logged+in+')
+        return redirect('/?message=Need+to+be+logged+in')
+
+    catergories_list = request.form.get('cat_id')
+    if catergories_list:
+        catergory = catergories_list.split(", ")
+        if len(catergory) == 2:
+            cat_id = catergory[0]
+            cat_name = catergory[1]
+            return render_template("category_confirm_delete.html", id=cat_id, name=cat_name, type="categories")
+
+    return redirect("/admin")
+
+
+@app.route('/category_confirm_delete/<int:cat_id>')
+def category_confirm_delete(cat_id):
+    if not is_logged_in():
+        return redirect('/?message=Need+to+be+logged+in')
+
     con = create_connection(DATABASE)
+    query = "DELETE FROM categories_list WHERE id = ?"
     cur = con.cursor()
-    cur.execute("DELETE FROM catergories_list WHERE id = ?", (id,))
+    cur.execute(query, (cat_id,))
     con.commit()
     con.close()
-    return redirect('/admin?message=Category+deleted')
 
-
+    return redirect("/admin")
 
 
 if __name__ == '__main__':

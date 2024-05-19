@@ -4,8 +4,8 @@
 {% block main %}
 
 <body>
-
-    <h2>Add New Word</h2>
+    <h2>Words Admin</h2>
+    <h3>Add New Word</h3>
     <form action="/add_word" method="post">
         <label for="english_word">English Word:</label><br>
         <input type="text" id="english_word" name="english_word"><br>
@@ -37,7 +37,7 @@
         <input type="submit" value="Add Word">
     </form>
 
-    <h2>Delete</h2>
+    <h3>Delete Word</h3>
     <form action="/delete_word" method="post">
         <label for="english_word">English Word:</label><br>
         <input type="text" id="english_word" name="english_word"><br>
@@ -69,8 +69,8 @@
         <input type="submit" value="Delete Word">
     </form>
 
-
-    <h2>Add Category</h2>
+    <h2>Category Admin</h2>
+    <h3>Add Category</h3>
     <form class="myform" method="post" action="/category_add">
         <div class="form-group">
             <div class="form-label"><label for="name">Category Name</label></div>
@@ -81,6 +81,25 @@
             <div class="form-element"><input type="submit" value="Add Category"></div>
         </div>
     </form>
+
+    <h3>Delete Category</h3>
+    <form class="myform" method="post" action="/category_delete">
+        <div class="form-group">
+            <div class="form-label"><label for="name">Category Name</label></div>
+                <div class="form-element">
+                    <select id="cat_id" name="cat_id">
+                        {% for category in categories %}
+                        <option value="{{ category[0] }}, {{ category[1] }}">{{ category[1] }}</option>
+                        {% endfor %}
+                    </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-label"></div>
+            <div class="form-element"><input type="submit" value="Delete Category"></div>
+        </div>
+    </form>
+
 </body>
 </html>
 
