@@ -132,7 +132,12 @@ def render_signup():
 def render_dictionary_page(cat_id):
     search_term = request.args.get('search', '')  # Get the search term from the query parameter
     con = create_connection(DATABASE)
-    query = "SELECT * FROM word_table WHERE cat_id=?"
+    query = """
+      SELECT word_table.id, word_table.english_word, word_table.te_reo_word, catergories_list.name 
+      FROM word_table
+      INNER JOIN catergories_list ON word_table.cat_id = catergories_list.id
+      WHERE word_table.cat_id=?
+      """
 
     if search_term:
         query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
@@ -254,20 +259,17 @@ def category_add():
         return redirect('/admin')
 
 
-@app.route('/category_delete', methods=['POST'])
+@app.route('/category_delete', methods=['POST', 'GET'])
 def render_category_delete():
     if not is_logged_in():
-        return redirect('/?message=Need+to+be+logged+in')
-
-    catergories_list = request.form.get('cat_id')
-    if catergories_list:
-        catergory = catergories_list.split(", ")
-        if len(catergory) == 2:
-            cat_id = catergory[0]
-            cat_name = catergory[1]
-            return render_template("category_confirm_delete.html", id=cat_id, name=cat_name, type="categories")
-
-    return redirect("/admin")
+        return redirect('//?message=Need+to+be+logged+in+')
+    if request.method == 'POST':
+        catergories = request.form.get('cat_id')
+        print(catergories)
+        catergory = catergories.split(", ")
+        cat_id = catergory[0]
+        cat_name = catergory[1]
+        return render_template("delete_confirm.html", id=cat_id, name=cat_name, type="catergories")
 
 
 @app.route('/category_confirm_delete/<int:cat_id>')
@@ -283,10 +285,23 @@ def category_confirm_delete(cat_id):
 
     return redirect("/admin")
 
+
+@app.route('/category_confirm_delete/<cat_id>')
+def render_category_confirm_delete(cat_id):
+    if not is_logged_in():
+        return redirect('//?message=Need+to+be+logged+in+')
+    con = create_connection(DATABASE)
+    query = "DELETE FROM catergories_list WHERE cat_id = ?"
+    cur = con.cursor()
+    cur.execute(query, (cat_id, ))
+    con.commit()
+    con.close()
+    return redirect("/admin")
+
+
+
 if __name__ == '__main__':
         app.run(debug=True)
-
-
 app.run(host='0.0.0.0', debug=True) # Run the Flask app
 
 
