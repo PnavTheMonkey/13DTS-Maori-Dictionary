@@ -1,9 +1,17 @@
 {% extends "base.html" %} <!-- Extends the base HTML template, allowing this template to use the structure and styles defined in 'base.html' -->
 
-{% block pageheading %}Welcome{% endblock %}<!-- Sets the content for the 'pageheading' block to display "Welcome" -->
+{% block pageheading %}Welcome{% endblock %} <!-- Sets the content for the 'pageheading' block to display "Welcome" -->
 
 {% block main %}
-<strong><em>Hello and Welcome to the Maori/English Dictionary. </em></strong> <!-- Displays a greeting message too welcome the user-->
 
+<h2><em>Hello and Welcome to the Maori/English Dictionary.</em></h2> <!-- Displays a greeting message to welcome the user -->
+
+<!-- an explaintion about what the database/dictionary does and a freidnly message -->
+<p><br>This website allows users to browse and search for Maori and English words, and manage the dictionary content (for teachers).</p>
+<p>Feel free to explore and learn more about the Maori language!</p>
+
+<p><br>To get to the Login Page, click <a href="/login"> Login</a>.</p> <!-- Link to the login page -->
+<p><br>To sign up for a new account, click <a href="/signup">Sign Up</a>.</p> <!-- Link to the sign-up page -->
+<p><br>To browse the dictionary, click <a href="/dictionary/1">Dictionary</a>.</p> <!-- Link to the dictionary page with a default category ID -->
 {% endblock %}
-<!-- end the block-->
+<!-- end the block -->
