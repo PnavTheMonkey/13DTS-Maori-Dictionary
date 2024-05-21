@@ -1,259 +1,198 @@
 * {
-    font-family: 'Manrope', sans-serif;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-weight: bolder;
-
+    font-family: 'Manrope', sans-serif; /* Apply 'Manrope' font to all elements */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    box-sizing: border-box; /* Use border-box model for easier sizing */
+    font-weight: bolder; /* Set font weight to bolder */
 }
 
 body {
-    background-color: rgba(236, 240, 241, 1.0);
+    background-color: rgba(236, 240, 241, 1.0); /* Set background color */
 }
 
-
-
 .container {
-    width: 60vw;
-    margin: auto;
-    /*background-color: rgba(52, 73, 94, 1.0);*/
-    /*color: rgba(236, 240, 241, 1.0);*/
+    width: 60vw; /* Set container width */
+    margin: auto; /* Center container horizontally */
 }
 
 .container::after {
-    content: "";
+    content: ""; /* Clearing floats */
     clear: both;
     display: table;
 }
 
 img {
-    max-width: 100%;
+    max-width: 100%; /* Ensure images don't exceed their container */
 }
 
 h1 {
-    text-align: center;
-    font-weight: 200;
-    font-size: 4rem;
-    margin: 0;
+    text-align: center; /* Center-align heading */
+    font-weight: 200; /* Set font weight */
+    font-size: 4rem; /* Set font size */
+    margin: 0; /* Remove default margin */
 }
 
 h2 {
-    font-size: 2rem;
-    text-align: center;
-    margin: 0 0 0.5rem 0;
-    font-weight: bolder
+    font-size: 2rem; /* Set font size */
+    text-align: center; /* Center-align heading */
+    margin: 0 0 0.5rem 0; /* Set margins */
+    font-weight: bolder; /* Set font weight */
 }
 
+/* Navigation */
 nav {
-    background-color: rgb(243, 0, 0); /* red */
-    text-align: center;
-    /*color: rgba(52, 152, 219, 1.0);!*pitch black*!*/
-    font-size: 1.5rem;
-    padding-top: 0.4rem;
-    padding-bottom: 0.7rem;
-    color: rgb(0, 0, 0); /*pitch black*/
+    background-color: rgb(243, 0, 0); /* Set background color */
+    text-align: center; /* Center-align text */
+    font-size: 1.5rem; /* Set font size */
+    padding-top: 0.4rem; /* Set padding */
+    padding-bottom: 0.7rem; /* Set padding */
+    color: rgb(0, 0, 0); /* Set text color */
 }
 
 .navbar-brand {
-    display: inline;
-    float: left;
+    display: inline; /* Make navbar brand inline */
+    float: left; /* Float navbar brand to the left */
 }
 
 .navbar-links {
-    display: inline;
-    float: right;
+    display: inline; /* Make navbar links inline */
+    float: right; /* Float navbar links to the right */
 }
 
-
-
 nav a {
-    /*margin:0 0.5rem;*/
-    padding: 0 0.5rem;
-    font-size: 1.5rem;
-
-    /*border: 1px solid rgba(52, 152, 219, 1.0);*/
-    /*border-radius:0.5rem;*/
+    padding: 0 0.5rem; /* Set padding */
+    font-size: 1.5rem; /* Set font size */
+    color: rgb(0, 0, 0); /* Set text color */
 }
 
 nav a:hover {
-    /*color: rgba(44, 62, 80, 1.0); !* black *!*/
-    /*background-color: rgba(52, 152, 219, 1.0); !*black*!*/
-    border-bottom: 3px solid rgb(0, 0, 0);
+    border-bottom: 3px solid rgb(0, 0, 0); /* Add bottom border on hover */
 }
 
 a, a:visited {
-    color: rgb(0, 0, 0);
-    /*color:black;*/
-    text-decoration: none;
+    color: rgb(0, 0, 0); /* Set link color */
+    text-decoration: none; /* Remove default underline */
 }
 
-.product-box img {
-    /*max-width:200px;*/
+/* Specific color for links on the home page */
+.home-page nav a,
+.home-page nav a:visited {
+    color: #0077ff; /* Blue color */
 }
 
+/* Product and Form Styles */
 .products {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    display: flex; /* Use flexbox for product layout */
+    flex-wrap: wrap; /* Allow products to wrap */
+    justify-content: space-evenly; /* Space out products evenly */
 }
 
 .product-box {
-    /*width: 13vw;*/
-    width: 32%;
-    /*float: left;*/
-    /*display: table-cell;*/
-    /*padding: 0.5rem;*/
-    /*margin: 1vw;*/
-    border: 1px solid rgba(189, 195, 199, 1.0);
-    color: rgba(44, 62, 80, 1.0);
-    margin-bottom: 0.5rem;
+    width: 32%; /* Set product box width */
+    border: 1px solid rgba(189, 195, 199, 1.0); /* Set border */
+    color: rgba(44, 62, 80, 1.0); /* Set text color */
+    margin-bottom: 0.5rem; /* Set margin */
 }
 
-.product-box-heading {
-    padding: 0.5rem;
+.product-box-heading,
+.product-box-info {
+    padding: 0.5rem; /* Set padding */
 }
 
 .product-box-image {
-    height: 150px;
-    overflow: hidden;
-}
-
-.product-box-info {
-    padding: 0.5rem;
-
+    height: 150px; /* Set image height */
+    overflow: hidden; /* Hide overflow */
 }
 
 .product-box h3 {
-    font-size: 1.2rem;
-    text-align: center;
+    font-size: 1.2rem; /* Set font size */
+    text-align: center; /* Center-align text */
 }
 
 .product-box p {
-    font-size: 0.8rem;
-    margin-bottom: 0.3rem;
+    font-size: 0.8rem; /* Set font size */
+    margin-bottom: 0.3rem; /* Set margin */
 }
 
 .product-box a {
-    border: 1px solid #ffffff;
-    padding: 0.3rem;
-    text-align: right;
+    border: 1px solid #ffffff; /* Set border */
+    padding: 0.3rem; /* Set padding */
+    text-align: right; /* Right-align text */
 }
 
 .myform {
-    width: 80%;
-    margin: auto;
-    padding-top: 3rem;
+    width: 80%; /* Set form width */
+    margin: auto; /* Center form horizontally */
+    padding-top: 3rem; /* Set padding */
 }
 
 .form-group {
-    padding-top: 3rem;
+    padding-top: 3rem; /* Set padding */
 }
 
 .form-label {
-    width: 30%;
-    float: left;
-    padding: 0.3rem;
+    width: 30%; /* Set label width */
+    float: left; /* Float labels to the left */
+    padding: 0.3rem; /* Set padding */
 }
 
 .form-element {
-    width: 70%;
-    float: left;
+    width: 70%; /* Set element width */
+    float: left; /* Float elements to the left */
 }
 
 .button-group {
-    margin-top: 3rem;
-    text-align: center;
+    margin-top: 3rem; /* Set margin */
+    text-align: center; /* Center-align text */
 }
 
-.button-group input {
-    padding: 0.3rem;
-}
-
+.button-group input,
 .form-group input {
-    padding: 0.3rem;
-    width: 100%;
+    padding: 0.3rem; /* Set padding */
+    width: 100%; /* Set width */
 }
 
+/* Table Styles */
 table {
-    border-collapse: collapse;
-    border: 1px;
-    colour: black
-
-}
-
- a:hover {
-     color: #0077ff;
- }
-
-.cart-table > thead {
-    font-weight: bold;
-    width: 75%;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-
-
-}
-
-.cart-table td {
-    padding: 0.2rem 1rem;
-    text-align: center;
-    border: 1px solid #ddd;
-}
-
-.cart-total {
-    font-weight: bold;
-}
-
-
-@media only screen and (max-width: 600px) {
-    .container {
-        width: 100%;
-    }
-
-    .product-box {
-        width: 49%;
-    }
-}
-
-
-@media only screen and (max-width: 400px) {
-    .product-box {
-        width: 100%;
-    }
-}
-
-li {
-    display: inline;
-    border: 10px;
-    border-radius: 20px;
-    padding: 10px;
-    justify-items: stretch;
-}
-
-
-footer {
-    background-color: #ff0000;
-    padding: 10px;
-    margin: 0;
-    grid-column: 1/3;
-    font-weight: bolder;
-}
-table {
-    border-collapse: collapse;
-    width: 100%;
+    border-collapse: collapse; /* Collapse table borders */
+    width: 100%; /* Set width */
 }
 
 table, th, td {
-    border: 1px solid black;
+    border: 1px solid black; /* Set border */
 }
 
 th, td {
-    padding: 8px;
-    text-align: left;
+    padding: 8px; /* Set padding */
+    text-align: left; /* Left-align text */
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #f2f2f2; /* Set background color */
 }
 
+/* Media Queries */
+@media only screen and (max-width: 600px) {
+    .container {
+        width: 100%; /* Set width to 100% on smaller screens */
+    }
+
+    .product-box {
+        width: 49%; /* Adjust product box width */
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .product-box {
+        width: 100%; /* Set product box width to 100% on smaller screens */
+    }
+}
+
+/* Footer Styles */
+footer {
+    background-color: #ff0000; /* Set background color */
+    padding: 10px; /* Set padding */
+    margin: 0; /* Remove default margin */
+    grid-column: 1/3; /* Set grid columns */
+    font-weight: bolder; /* Set font weight */
+}

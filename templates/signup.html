@@ -4,6 +4,10 @@
 
 {% block main %}
 
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% endif %}
+
 <form class="myform" method="post"> <!-- Starts a form with the class myform and sets the method to post-->
     <div class="form-group">
         <div class="form-label">First Name:</div>

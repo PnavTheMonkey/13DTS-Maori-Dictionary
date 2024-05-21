@@ -13,8 +13,6 @@
         </ul>
     </div>
 
-
-
     <table>
       <thead>
         <tr>
@@ -36,25 +34,25 @@
             <td>{{ word[3] }}</td>
             <td>{{ word[4] }}</td>
             <td>{{ word[5] }}</td>
+            <td>{{ word[6] }}</td>
         </tr>
         {% endfor %}
+
+        {% if all_word_info %}
+            {% for word_info in all_word_info %}
+            <tr>
+                <td>{{ word_info[0] }}</td>
+                <td>{{ word_info[1] }}</td>
+                <td>{{ word_info[2] }}</td>
+                <td>{{ word_info[3] }}</td>
+                <td>{{ word_info[4] }}</td>
+                <td>{{ word_info[5] }}</td>
+                <td>{{ word_info[6] }}</td>
+            </tr>
+
+            {% endfor %}
+        {% endif %}
       </tbody>
     </table>
-
-    {% if all_word_info %}
-        <div class="word-info">
-
-            <ul>
-                {% for word_info in all_word_info %}
-                    <li>Id: {{ word_info[0] }}</li>
-                    <li>English Word: {{ word_info[1] }}</li>
-                    <li>Maori Word: {{ word_info[2] }}</li>
-                    <li>Category: {{ word_info[3] }}</li>
-                    <li>Description: {{ word_info[4] }}</li>
-                    <li>User Id: {{ word_info[5] }}</li>
-                    <li>Level: {{ word_info[6] }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
 {% endblock %}
+j
