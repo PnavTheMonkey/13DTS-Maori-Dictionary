@@ -234,14 +234,16 @@ def add_word_route():
     if request.method == 'POST':
         english_word = request.form['english_word']
         te_reo_word = request.form['te_reo_word']
-
-        # Correctly access 'category' key instead of 'cat_id'
-        category = request.form['category']
+        level = request.form['level']
+        description = request.form['description']
+        cat_id = request.form['cat_id']
 
         con = create_connection(DATABASE)
         cur = con.cursor()
-        cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)",
-                    (english_word, te_reo_word, category))
+        cur.execute("""
+            INSERT INTO word_table (english_word, te_reo_word, level, description, cat_id)
+            VALUES (?, ?, ?, ?, ?)
+        """, (english_word, te_reo_word, level, description, cat_id))
         con.commit()
         con.close()
 
@@ -255,6 +257,7 @@ def add_word_route():
     con.close()
 
     return render_template('admin.html', categories=categories, logged_in=is_logged_in())
+
 
 
 @app.route('/category_add', methods=['POST'])

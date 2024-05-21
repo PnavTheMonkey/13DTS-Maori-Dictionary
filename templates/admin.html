@@ -4,7 +4,7 @@
 {% block main %}
 
 <body>
-    <h2>Words Admin</h2>
+    <br><br><br><h2>Words Admin</h2>
     <h3>Add New Word</h3>
     <form action="/add_word" method="post">
         <div class="form-group">
@@ -27,11 +27,10 @@
             <div class="form-element"><input type="text" name="description" id="description"></div>
         </div>
 
-
         <div class="form-group">
             <div class="form-label"><label for="cat_id">Category</label></div>
             <div class="form-element">
-                <select id="cat_id" name="category"> <!-- Change name to 'category' -->
+                <select id="cat_id" name="cat_id">
                     {% for category in categories %}
                     <option value="{{ category[0] }}">{{ category[1] }}</option>
                     {% endfor %}
@@ -39,21 +38,20 @@
             </div>
         </div>
 
-
         <div class="form-group">
             <div class="form-element"><input type="submit" value="Add Word"></div>
         </div>
     </form>
 
-    <br><br><br><h3>Delete Word</h3>
+    <br><br><br><br><h3>Delete Word</h3>
     <form action="/delete_word" method="post">
-        <label for="id">Word ID:</label><br>
-        <input type="text" id="id" name="id" pattern="[0-9]*"><br>
+        <br><label for="id">Word ID:</label><br>
+        <br><input type="text" id="id" name="id"><br>
 
-        <input type="submit" value="Delete Word">
+        <br><input type="submit" value="Delete Word">
     </form>
 
-    <h2>Category Admin</h2>
+    <br><br><h2>Category Admin</h2>
     <h3>Add Category</h3>
     <form class="myform" method="post" action="/category_add">
         <div class="form-group">
@@ -66,23 +64,23 @@
         </div>
     </form>
 
-    <br><br><br><h3>Delete Category</h3>
-        <form class="myform" method="post" action="/category_delete">
-            <div class="form-group">
-                <div class="form-label"><label for="cat_id">Category Name</label></div>
-                <div class="form-element">
-                    <select id="cat_id" name="cat_id">
-                        {% for category in categories %}
-                        <option value="{{ category[0] }},{{ category[1] }}">{{ category[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <br><br><br><br><h3>Delete Category</h3>
+    <form class="myform" method="post" action="/category_delete">
+        <div class="form-group">
+            <div class="form-label"><label for="cat_id">Category Name</label></div>
+            <div class="form-element">
+                <select id="cat_id" name="cat_id">
+                    {% for category in categories %}
+                    <option value="{{ category[0] }}">{{ category[1] }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <div class="form-group">
-                <div class="form-label"></div>
-                <div class="form-element"><input type="submit" value="Delete Category"></div>
-            </div>
-        </form>
+        </div>
+        <div class="form-group">
+            <div class="form-label"></div>
+            <div class="form-element"><input type="submit" value="Delete Category"></div>
+        </div>
+    </form>
 
 </body>
 {% endblock %}
