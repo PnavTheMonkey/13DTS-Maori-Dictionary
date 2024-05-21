@@ -276,12 +276,17 @@ def render_category_delete():
         return redirect('/dictionary/1')
 
     if request.method == 'POST':
-        categories = request.form.get('cat_id')
-        print(categories)
-        category = categories.split(", ")
-        cat_id = category[0]
-        cat_name = category[1]
-        return render_template("delete_word_confirmed.html", id=cat_id, name=cat_name, type="categories")
+        cat_id = request.form.get('cat_id')
+        print("Category ID received for deletion:", cat_id)
+
+        if not cat_id:
+            print("Error: No category ID received.")
+            return redirect('/admin?error=No+category+selected')
+
+        return render_template("delete_word_confirmed.html", id=cat_id, type="categories")
+
+
+    return redirect('/admin')
 
 
 @app.route('/category_confirm_delete/<int:cat_id>')
@@ -289,6 +294,7 @@ def category_confirm_delete(cat_id):
     if not is_logged_in():
         return redirect('/?message=Need+to+be+logged+in')
 
+    print("Deleting category with ID:", cat_id)
     con = create_connection(DATABASE)
     cur = con.cursor()
     cur.execute("DELETE FROM categories_list WHERE id = ?", (cat_id,))
@@ -296,20 +302,6 @@ def category_confirm_delete(cat_id):
     con.close()
 
     return redirect("/admin")
-
-
-@app.route('/category_confirm_delete/<cat_id>')
-def render_category_confirm_delete(cat_id):
-    if not is_logged_in():
-        return redirect('//?message=Need+to+be+logged+in+')
-    con = create_connection(DATABASE)
-    query = "DELETE FROM categories_list WHERE cat_id = ?"
-    cur = con.cursor()
-    cur.execute(query, (cat_id, ))
-    con.commit()
-    con.close()
-    return redirect("/admin")
-
 
 
 if __name__ == '__main__':
