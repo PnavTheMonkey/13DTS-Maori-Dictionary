@@ -198,12 +198,14 @@ def delete_word():
     if not is_logged_in():
         return redirect("/login")
 
-    english_word = request.form['english_word']
-    te_reo_word = request.form['te_reo_word']
+    word_id = request.form.get('id')
+
+    if not word_id:
+        return redirect("/admin?error=Word+ID+not+provided")
 
     con = create_connection(DATABASE)
     cur = con.cursor()
-    cur.execute("DELETE FROM word_table WHERE english_word = ? AND te_reo_word = ?", (english_word, te_reo_word))
+    cur.execute("DELETE FROM word_table WHERE id = ?", (word_id,))
     con.commit()
     con.close()
 
