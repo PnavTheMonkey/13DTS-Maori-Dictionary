@@ -45,10 +45,11 @@
         </div>
     </form>
 
+    <h1>   </h1>
     <h3>Delete Word</h3>
     <form action="/delete_word" method="post">
         <label for="id">Word ID:</label><br>
-        <input type="text" id="id" name="id"><br>
+        <input type="text" id="id" name="id" pattern="[0-9]*"><br>
 
         <input type="submit" value="Delete Word">
     </form>
