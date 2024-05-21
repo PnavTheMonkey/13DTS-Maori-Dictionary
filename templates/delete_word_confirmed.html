@@ -3,7 +3,9 @@
 {% block pageheading %}Confirm Delete Word{% endblock %}
 
 {% block main %}
-    <h3> Are you sure you want to delete this word {{ type }} {{ name }}?</h3>
-        <a href="/delete_word_confirmed/{{ id }}">Yes</a> /
-        <a href="/admin">No</a>
+    <h2>Are you sure you want to delete this category?</h2>
+    <form action="/category_confirm_delete/{{ id }}" method="post">
+        <input type="submit" value="Yes">
+    </form>
+    <a href="/admin">Cancel</a>
 {% endblock %}

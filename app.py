@@ -280,32 +280,41 @@ def render_category_delete():
         return redirect('/dictionary/1')
 
     if request.method == 'POST':
-        cat_id = request.form.get('cat_id')
-        print("Category ID received for deletion:", cat_id)
+        categories = request.form.get('cat_id')
 
-        if not cat_id:
-            print("Error: No category ID received.")
-            return redirect('/admin?error=No+category+selected')
+        # Check if the categories value is present
+        if not categories:
+            return redirect('/admin?error=Category+not+selected')
 
-        return render_template("delete_word_confirmed.html", id=cat_id, type="categories")
+        try:
+            category = categories.split(",")
+            cat_id = category[0].strip()
+            cat_name = category[1].strip()
+        except IndexError:
+            # Handle the case where the categories string does not split into the expected parts
+            return redirect('/admin?error=Invalid+category+format')
 
+        return render_template("delete_word_confirmed.html", id=cat_id, name=cat_name, type="categories")
 
-    return redirect('/admin')
+    # If GET request, render the delete category form
+    con = create_connection(DATABASE)
+    cur = con.cursor()
+    cur.execute("SELECT id, name FROM categories_list")
+    categories = cur.fetchall()
+    con.close()
 
+    return render_template('delete_category.html', categories=categories, logged_in=is_logged_in())
 
-@app.route('/category_confirm_delete/<int:cat_id>')
+@app.route('/category_confirm_delete/<int:cat_id>', methods=['POST'])
 def category_confirm_delete(cat_id):
     if not is_logged_in():
         return redirect('/?message=Need+to+be+logged+in')
 
-    print("Deleting category with ID:", cat_id)  # Debug print to check the received category ID
     con = create_connection(DATABASE)
     cur = con.cursor()
     cur.execute("DELETE FROM categories_list WHERE id = ?", (cat_id,))
     con.commit()
     con.close()
-
-    print("Category deleted successfully.")  # Debug print to confirm successful deletion
 
     return redirect("/admin")
 
