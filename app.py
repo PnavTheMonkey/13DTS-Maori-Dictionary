@@ -232,12 +232,14 @@ def add_word_route():
     if request.method == 'POST':
         english_word = request.form['english_word']
         te_reo_word = request.form['te_reo_word']
-        cat_id = request.form['category']
+
+        # Correctly access 'category' key instead of 'cat_id'
+        category = request.form['category']
 
         con = create_connection(DATABASE)
         cur = con.cursor()
         cur.execute("INSERT INTO word_table (english_word, te_reo_word, cat_id) VALUES (?, ?, ?)",
-                    (english_word, te_reo_word, cat_id))
+                    (english_word, te_reo_word, category))
         con.commit()
         con.close()
 
@@ -294,15 +296,16 @@ def category_confirm_delete(cat_id):
     if not is_logged_in():
         return redirect('/?message=Need+to+be+logged+in')
 
-    print("Deleting category with ID:", cat_id)
+    print("Deleting category with ID:", cat_id)  # Debug print to check the received category ID
     con = create_connection(DATABASE)
     cur = con.cursor()
     cur.execute("DELETE FROM categories_list WHERE id = ?", (cat_id,))
     con.commit()
     con.close()
 
-    return redirect("/admin")
+    print("Category deleted successfully.")  # Debug print to confirm successful deletion
 
+    return redirect("/admin")
 
 if __name__ == '__main__':
         app.run(debug=True)
