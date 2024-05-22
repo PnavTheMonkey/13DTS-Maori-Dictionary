@@ -69,6 +69,10 @@ nav a:hover {
     border-bottom: 3px solid rgb(0, 0, 0); /* Add bottom border on hover */
 }
 
+a:hover {
+    color: #0077ff;
+    border-bottom: 3px solid rgb(0, 119, 255); /
+}
 a, a:visited {
     color: rgb(0, 0, 0); /* Set link color */
     text-decoration: none; /* Remove default underline */

@@ -59,7 +59,7 @@ def render_login():
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
 
-        query = """SELECT id, fname, password FROM account_table WHERE email = ?"""
+        query = """SELECT account_id, fname, password FROM account_table WHERE email = ?"""
         con = create_connection(DATABASE)
         cur = con.cursor()
         cur.execute(query, (email,))
@@ -131,7 +131,7 @@ def render_dictionary_page(cat_id):
     con = create_connection(DATABASE)
     query = """
       SELECT *  FROM word_table
-      INNER JOIN categories_list ON word_table.cat_id = categories_list.id
+      INNER JOIN categories_list ON word_table.cat_id = categories_list.category_id
       WHERE word_table.cat_id=?
       """
 
@@ -147,7 +147,7 @@ def render_dictionary_page(cat_id):
 
     word_table = cur.fetchall()
 
-    query = "SELECT id, name FROM categories_list"
+    query = "SELECT category_id, name FROM categories_list"
     cur = con.cursor()
     cur.execute(query)
     catergory_list = cur.fetchall()
@@ -180,46 +180,46 @@ def render_admin():
     return render_template('admin.html', logged_in=is_logged_in(), categories=categories_list)
 
 
-@app.route('/words_info/<id>')
-def render_words_info(id):
+@app.route('/words_info/<word_id>')
+def render_words_info(word_id):
     con = create_connection(DATABASE)
-    query = "SELECT * FROM word_table WHERE id=?"
+    query = "SELECT * FROM word_table WHERE word_id=?"
 
     cur = con.cursor()
-    cur.execute(query, (id,))
+    cur.execute(query, (word_id,))
 
     all_word_info = cur.fetchall()
     con.close()
     print(all_word_info)
     return render_template("words_info.html", all_word_info=all_word_info)
 
-@app.route('/delete_word', methods=['POST'])
-def delete_word():
+@app.route('/delete_word/<word_id>', methods=['GET', 'POST'])
+def delete_word(word_id):
+    print('a')
+    print(word_id)
     if not is_logged_in():
         return redirect("/login")
 
-    word_id = request.form.get('id')
 
-    if not word_id:
-        return redirect("/admin?error=Word+ID+not+provided")
 
     con = create_connection(DATABASE)
     cur = con.cursor()
-    cur.execute("DELETE FROM word_table WHERE id = ?", (word_id,))
-    con.commit()
+    query = "SELECT english_word FROM word_table WHERE word_id = ?"
+    cur.execute(query, (word_id, ))
+    english_word = cur.fetchone()
     con.close()
+    print(english_word)
+    return render_template('delete_word_confirmed.html', name=english_word, id=word_id)
 
-    return redirect("/admin")
 
-
-@app.route('/delete_word_confirmed/<int:cat_id>')
-def delete_word_confirmed(cat_id):
+@app.route('/delete_word_confirmed/<word_id>')
+def delete_word_confirmed(word_id):
     if not is_logged_in():
         return redirect('/?message=Need+to+be+logged+in')
 
     con = create_connection(DATABASE)
     cur = con.cursor()
-    cur.execute("DELETE FROM word_table WHERE id = ?", (cat_id,))
+    cur.execute("DELETE FROM word_table WHERE word_id = ?", (word_id,))
     con.commit()
     con.close()
 
@@ -252,7 +252,7 @@ def add_word_route():
     # Get categories for the form
     con = create_connection(DATABASE)
     cur = con.cursor()
-    cur.execute("SELECT id, name FROM categories_list")
+    cur.execute("SELECT word_id, name FROM categories_list")
     categories = cur.fetchall()
     con.close()
 
@@ -302,7 +302,7 @@ def render_category_delete():
     # If GET request, render the delete category form
     con = create_connection(DATABASE)
     cur = con.cursor()
-    cur.execute("SELECT id, name FROM categories_list")
+    cur.execute("SELECT category_id, name FROM categories_list")
     categories = cur.fetchall()
     con.close()
 
@@ -315,7 +315,7 @@ def category_confirm_delete(cat_id):
 
     con = create_connection(DATABASE)
     cur = con.cursor()
-    cur.execute("DELETE FROM categories_list WHERE id = ?", (cat_id,))
+    cur.execute("DELETE FROM categories_list WHERE category_id = ?", (cat_id,))
     con.commit()
     con.close()
 
