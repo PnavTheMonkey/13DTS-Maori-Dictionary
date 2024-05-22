@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html>
 
-<head>  <!-- The heading -->
-    <meta charset="utf-8">
-    <title>English to Maori Dictionary</title>  <!-- Printing the title in the heading -->
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!--  -->
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet"> <!--getting the style sheet and the fonts for the heading of the database from the static folder  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+<head>  <!-- The head section starts here -->
+    <meta charset="utf-8">  <!-- Set character encoding to UTF-8 -->
+    <title>English to Maori Dictionary</title>  <!-- The title of the web page -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Make the web page responsive -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet"> <!-- Link to Google Fonts for custom fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/> <!-- Normalize CSS for consistent styling across browsers -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet"> <!-- Link to a custom stylesheet -->
 </head>
 
-<body>
-<nav>
-    <div class="container">
-        <div class="navbar-brand"></div>
-        <div class="navbar-links">
-            <a href="/">Home</a>
-            <a href="/dictionary/1">Dictionary</a>
-            {% if logged_in %}  <!-- Links displayed if the user is logged in -->
-            <a href="/logout">Logout</a>
-            <a href="/admin">Admin</a>
-            {% else %} <!-- Links displayed if the user is not logged in -->
-            <a href="/login"> Login</a>
-            <a href="/signup"> Signup</a>
+<body> <!-- The body of the document starts here -->
+<nav> <!-- Navigation bar -->
+    <div class="container"> <!-- Container for the navigation bar -->
+        <div class="navbar-brand"></div> <!-- Placeholder for the brand/logo -->
+        <div class="navbar-links"> <!-- Container for navigation links -->
+            <a href="/">Home</a> <!-- Link to the home page -->
+            <a href="/dictionary/1">Dictionary</a> <!-- Link to the dictionary page -->
+            {% if logged_in %}  <!-- Check if the user is logged in -->
+            <a href="/logout">Logout</a> <!-- Link to logout if logged in -->
+            <a href="/admin">Admin</a> <!-- Link to admin page if logged in -->
+            {% else %} <!-- If the user is not logged in -->
+            <a href="/login"> Login</a> <!-- Link to login page -->
+            <a href="/signup"> Signup</a> <!-- Link to signup page -->
             {% endif %}
         </div>
     </div>
 </nav>
-<div class="container">
-    <header>
-        <h1>English to Maori Dictionary</h1>
+<div class="container"> <!-- Main container for content -->
+    <header> <!-- Header section -->
+        <h1>English to Maori Dictionary</h1> <!-- Main title of the page -->
 
-        <h2>{% block pageheading %}{% endblock %}</h2>
+        <h2>{% block pageheading %}{% endblock %}</h2> <!-- Placeholder for the page heading block -->
     </header>
 
-    <main>
+    <main> <!-- Main content section -->
         {% block main %}
-        {% endblock %}
+        {% endblock %} <!--- end of block->
     </main>
 </div>
 </body>

@@ -1,329 +1,309 @@
-from flask import Flask, render_template, redirect, request, session  #imports the neccesary modules from Flask
-import sqlite3
-from sqlite3 import Error
-from flask_bcrypt import Bcrypt   #import bcrypt module
+from flask import Flask, render_template, redirect, request, session  # Import necessary modules from Flask
+import sqlite3  # Import SQLite3 for database management
+from sqlite3 import Error  # Import the Error class for handling database errors
+from flask_bcrypt import Bcrypt  # Import Bcrypt module for password hashing
 
+DATABASE = 'C:/Users/Kartik/OneDrive/13DTS/13DTS-Maori-Dictionary/database.db'  # Define the path to the SQLite database file
 
-DATABASE ='C:/Users/Kartik/OneDrive/13DTS/13DTS-Maori-Dictionary/database.db'   # Define the path to the SQLite database file
+app = Flask(__name__)  # Create a Flask application instance
+bcrypt = Bcrypt(app)  # Initialize Bcrypt with the Flask app
+app.secret_key = "uhb*#1e8hp*9x"  # Set a secret key for the Flask application for session management
 
-app = Flask(__name__)    # Create a Flask application instance
-bcrypt = Bcrypt(app)    ## starts Bcrypt with the Flask app
-app.secret_key = "uhb*#1e8hp*9x"    # Set a secret key for the Flask application this is the key for hashed password
-
-
-def create_connection(db_file):       # Function to create a connection to the SQLite database
+def create_connection(db_file):  # Function to create a connection to the SQLite database
     try:
-        connection = sqlite3.connect(db_file)       # Attempt connection to the SQLite database
-        return connection
-    except Error as e:
-        print(e)           # Print an error message if connection fails
-    return None
+        connection = sqlite3.connect(db_file)  # Attempt connection to the SQLite database
+        return connection  # Return the connection object if successful
+    except Error as e:  # Handle connection errors
+        print(e)  # Print an error message if connection fails
+    return None  # Return None if connection fails
 
-def is_logged_in(): # Function to check if user is logged in
-    if session.get("email") is None:
-        print("not logged in ")         # P mrint message if the person is not logged in
-        return False
-    else:
-        print("logged in!")         # Print message if user is logged in
-        return True
+def is_logged_in():  # Function to check if user is logged in
+    if session.get("email") is None:  # Check if "email" is not in session
+        print("not logged in")  # Print message if user is not logged in
+        return False  # Return False if user is not logged in
+    else:  # If "email" is in session
+        print("logged in!")  # Print message if user is logged in
+        return True  # Return True if user is logged in
 
-def is_logged_in_as_teacher():
-    if session.get("email") is None:
-        return False
-    else:
-        email = session.get("email")
-        con = create_connection(DATABASE)
-        cur = con.cursor()
-        cur.execute("SELECT teacher FROM account_table WHERE email=?", (email,))
-        user_data = cur.fetchone()
-        con.close()
+def is_logged_in_as_teacher():  # Function to check if user is logged in as a teacher
+    if session.get("email") is None:  # Check if "email" is not in session
+        return False  # Return False if user is not logged in
+    else:  # If "email" is in session
+        email = session.get("email")  # Get email from session
+        con = create_connection(DATABASE)  # Create a connection to the database
+        cur = con.cursor()  # Create a cursor object
+        cur.execute("SELECT teacher FROM account_table WHERE email=?", (email,))  # Execute query to check if user is a teacher
+        user_data = cur.fetchone()  # Fetch one result
+        con.close()  # Close the connection
         if user_data and user_data[0]:  # Check if the user is a teacher
-            return True
-        else:
-            return False
+            return True  # Return True if user is a teacher
+        else:  # If not a teacher
+            return False  # Return False if user is not a teacher
 
+@app.route('/')  # Route for the homepage
+def render_homepage():  # Function to render the homepage
+    return render_template("home.html", logged_in=is_logged_in())  # Render home.html with logged_in status
 
+@app.route('/login', methods=['POST', 'GET'])  # Route for the login page
+def render_login():  # Function to render the login page
+    if is_logged_in():  # Check if user is already logged in
+        return redirect('/dictionary/1')  # Redirect to dictionary page if logged in
 
-@app.route('/')
-def render_homepage():     # Render the home.html template
-    return render_template("home.html" , logged_in=is_logged_in())       # This print statement will not
+    if request.method == "POST":  # Check if request method is POST
+        email = request.form['email'].strip().lower()  # Get and clean email from form
+        password = request.form['password'].strip()  # Get and clean password from form
 
-    print("home")  # executed as it comes after the return statement
+        query = """SELECT account_id, fname, password FROM account_table WHERE email = ?"""  # Define query
+        con = create_connection(DATABASE)  # Create a connection to the database
+        cur = con.cursor()  # Create a cursor object
+        cur.execute(query, (email,))  # Execute the query
+        user_data = cur.fetchone()  # Fetch one result
+        con.close()  # Close the connection
 
-@app.route('/login', methods=['POST', 'GET'])
-def render_login():
-    if is_logged_in():  # Check if user is already logged in.
-        return redirect('/dictionary/1')
+        if user_data is None:  # Check if user data is None
+            return redirect("/login?error=Invalid+username+or+password")  # Redirect with error if user not found
 
-    if request.method == "POST":
-        email = request.form['email'].strip().lower()
-        password = request.form['password'].strip()
+        user_id, first_name, db_password = user_data  # Unpack user data
 
-        query = """SELECT account_id, fname, password FROM account_table WHERE email = ?"""
-        con = create_connection(DATABASE)
-        cur = con.cursor()
-        cur.execute(query, (email,))
-        user_data = cur.fetchone()
-        con.close()
+        if not bcrypt.check_password_hash(db_password, password):  # Check if password is incorrect
+            return redirect(request.referrer + '?error=Email+invalid+or+password+incorrect')  # Redirect with error
 
-        if user_data is None:
-            return redirect("/login?error=Invalid+username+or+password")
+        session['email'] = email  # Set email in session
+        session['userid'] = user_id  # Set user ID in session
+        session['firstname'] = first_name  # Set first name in session
 
-        user_id, first_name, db_password = user_data
+        return redirect('/')  # Redirect to homepage once logged in
 
-        if not bcrypt.check_password_hash(db_password, password):
-            return redirect(request.referrer + '?error=Email+invalid+or+password+incorrect')
+    return render_template("login.html", logged_in=is_logged_in())  # Render login.html for GET requests
 
-        # Create session variables
-        session['email'] = email
-        session['userid'] = user_id
-        session['firstname'] = first_name
+@app.route('/signup', methods=['POST', 'GET'])  # Route for the signup page
+def render_signup():  # Function to render the signup page
+    if is_logged_in():  # Check if user is already logged in
+        return redirect('/dictionary/1')  # Redirect to dictionary page if logged in
+    if request.method == 'POST':  # Check if request method is POST
+        print(request.form)  # Print form data for debugging
 
-        return redirect('/')  # returns them home once logged in
-
-    return render_template("login.html", logged_in=is_logged_in())  # Render the login page for GET requests
-
-@app.route('/signup', methods=['POST', 'GET'])
-def render_signup():
-    if is_logged_in():      # Check if user is already logged in.
-        return redirect('/dictionary/1')
-    if request.method == 'POST':
-        print(request.form)
-
-        fname = request.form.get('fname').title().strip()   # Extract form data
+        fname = request.form.get('fname').title().strip()  # Extract and clean form data
         lname = request.form.get('lname').title().strip()
         email = request.form.get('email').lower().strip()
         password = request.form.get('password')
         password2 = request.form.get('password2')
         teacher = request.form.get('role')
 
-        if password != password2:            # Check if passwords match
-            return redirect("\signup?error='Passwords+do+not+match")
+        if password != password2:  # Check if passwords match
+            return redirect("\signup?error='Passwords+do+not+match")  # Redirect with error if passwords do not match
 
-        if len(password) < 8:         # Check if password is at least 8 characters long
-            return redirect("\signup?error='Password+must+be+at+least+8+characters")
+        if len(password) < 8:  # Check if password is at least 8 characters long
+            return redirect("\signup?error='Password+must+be+at+least+8+characters")  # Redirect with error if password too short
 
+        hashed_password = bcrypt.generate_password_hash(password)  # Hash the password
+        con = create_connection(DATABASE)  # Create a connection to the database
+        query = "INSERT INTO account_table (fname, lname, email, password, teacher) VALUES (?,?,?,?,?)"  # Define query
+        cur = con.cursor()  # Create a cursor object
+        print()  # Print empty line for debugging
 
+        try:  # Try to execute the query
+            cur.execute(query, (fname, lname, email, hashed_password, teacher))  # Execute query
+        except sqlite3.IntegrityError:  # Handle integrity error
+            con.close()  # Close the connection
+            return redirect("\signup?error='Email is already in use.")  # Redirect with error if email is already in use
 
-        hashed_password = bcrypt.generate_password_hash(password)         # Hash the password
-        con = create_connection(DATABASE)        # Open a connection to the database
-        query = "INSERT INTO account_table (fname, lname, email, password, teacher) VALUES (?,?,?,?,?)"
-        cur = con.cursor()
-        print()
+        con.commit()  # Commit changes
+        con.close()  # Close the connection
 
-        try:
-            cur.execute(query, (fname, lname, email, hashed_password, teacher))
-        except sqlite3.IntegrityError:
-            con.close()
-            return redirect("\signup?error='Email is already in use.")
+        return redirect("\login")  # Redirect to login page after successful signup
 
-        con.commit()         # Commit changes and close connection
-        con.close()
+    return render_template('/signup.html', logged_in=is_logged_in())  # Render signup.html for GET requests
 
-        return redirect("\login")         # Redirect to login page after successful signup
-
-
-    return render_template('/signup.html' , logged_in=is_logged_in())     # Render the signup.html template for GET requests
-
-@app.route('/dictionary/<cat_id>')
-def render_dictionary_page(cat_id):
-    search_term = request.args.get('search', '')  # Get the search term from the query parameter
-    con = create_connection(DATABASE)
+@app.route('/dictionary/<cat_id>')  # Route for the dictionary page
+def render_dictionary_page(cat_id):  # Function to render the dictionary page
+    search_term = request.args.get('search', '')  # Get the search term from query
+    con = create_connection(DATABASE)  # Create a connection to the database
     query = """
       SELECT *  FROM word_table
-      INNER JOIN categories_list ON word_table.cat_id = categories_list.category_id
+      INNER JOIN categories_list ON word_table.cat_id = categories_list.category_id 
       WHERE word_table.cat_id=?
-      """
+      """  # Define query and the Inner join between the tables
 
-
-    if search_term:
+    if search_term:  # Check if there is a search term
         query += " AND (english_word LIKE ? OR te_reo_word LIKE ?)"  # Update the query to include search conditions
-        search_param = f"%{search_term}%"    # Define search parameters
-        cur = con.cursor()
-        cur.execute(query, (cat_id, search_param, search_param))    # Execute the query with search parameters
-    else:
-        cur = con.cursor()
-        cur.execute(query, (cat_id,))
+        search_param = f"%{search_term}%"  # Define search
+        cur = con.cursor()  # Create a cursor object
+        cur.execute(query, (cat_id, search_param, search_param))  # Execute the query with search
+    else:  # If no search term
+        cur = con.cursor()  # Create a cursor object
+        cur.execute(query, (cat_id,))  # Execute the query
 
-    word_table = cur.fetchall()
+    word_table = cur.fetchall()  # Fetch all results
 
-    query = "SELECT category_id, name FROM categories_list"
-    cur = con.cursor()
-    cur.execute(query)
-    catergory_list = cur.fetchall()
-    con.close()
-    print(word_table, catergory_list)
+    query = "SELECT category_id, name FROM categories_list"  # Define query to get categories
+    cur = con.cursor()  # Create a cursor object
+    cur.execute(query)  # Execute the query
+    catergory_list = cur.fetchall()  # Fetch all results
+    con.close()  # Close the connection
+    print(word_table, catergory_list)  # Print results for debugging
 
-    return render_template('dictionary.html', words=word_table, catergories=catergory_list, search_term=search_term, cat_id=cat_id , logged_in=is_logged_in())
+    return render_template('dictionary.html', words=word_table, catergories=catergory_list, search_term=search_term, cat_id=cat_id, logged_in=is_logged_in())  # Render dictionary.html
 
-@app.route('/logout')
-def logout():
-    print(list(session.keys()))
-    [session.pop(key) for key in list(session.keys())]   #removes the stuff from session
-    print(list(session.keys()))
-    return redirect('/?message=Later+cuz!')
+@app.route('/logout')  # Route for logout
+def logout():  # Function to handle logout
+    print(list(session.keys()))  # Print current session keys for debugging
+    [session.pop(key) for key in list(session.keys())]  # Remove all session keys
+    print(list(session.keys()))  # Print session keys after logout for debugging
+    return redirect('/?message=Later+cuz!')  # Redirect to homepage with message
 
-
-@app.route('/admin')
-def render_admin():
+@app.route('/admin')  # Route for the admin page
+def render_admin():  # Function to render the admin page
     if not is_logged_in():  # Check if user is logged in
-        return redirect('/login?error=Need+to+be+logged+in')
+        return redirect('/login?error=Need+to+be+logged+in')  # Redirect to login with error if not logged in
     elif not is_logged_in_as_teacher():  # Check if user is logged in as a teacher
-        return redirect('/?error=Only+teachers+can+access+the+admin+page')
+        return redirect('/?error=Only+teachers+can+access+the+admin+page')  # Redirect to homepage with error if not a teacher
 
-    con = create_connection(DATABASE)
-    query = "SELECT * FROM categories_list"
-    cur = con.cursor()
-    cur.execute(query)
-    categories_list = cur.fetchall()
-    con.close()
-    return render_template('admin.html', logged_in=is_logged_in(), categories=categories_list)
+    con = create_connection(DATABASE)  # Create a connection to the database
+    query = "SELECT * FROM categories_list"  # Define query to get categories
+    cur = con.cursor()  # Create a cursor object
+    cur.execute(query)  # Execute the query
+    categories_list = cur.fetchall()  # Fetch all results
+    con.close()  # Close the connection
+    return render_template('admin.html', logged_in=is_logged_in(), categories=categories_list)  # Render admin.html
 
+@app.route('/words_info/<word_id>')  # Route for word info page
+def render_words_info(word_id):  # Function to render word info page
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/login?error=Need+to+be+logged+in')  # Redirect to login with error if not logged in
 
-@app.route('/words_info/<word_id>')
-def render_words_info(word_id):
-    con = create_connection(DATABASE)
-    query = "SELECT * FROM word_table WHERE word_id=?"
+    con = create_connection(DATABASE)  # Create a connection to the database
+    query = "SELECT * FROM word_table WHERE word_id=?"  # Define query to get word info
 
-    cur = con.cursor()
-    cur.execute(query, (word_id,))
+    cur = con.cursor()  # Create a cursor object
+    cur.execute(query, (word_id,))  # Execute the query
+    all_word_info = cur.fetchall()  # Fetch all results
+    con.close()  # Close the connection
+    print(all_word_info)  # Print word info for debugging
+    return render_template("words_info.html", all_word_info=all_word_info)  # Render words_info.html
 
-    all_word_info = cur.fetchall()
-    con.close()
-    print(all_word_info)
-    return render_template("words_info.html", all_word_info=all_word_info)
+@app.route('/delete_word/<word_id>', methods=['GET', 'POST'])  # Route for delete word confirmation
+def delete_word(word_id):  # Function to handle delete word
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/login?error=Need+to+be+logged+in')  # Redirect to login with error if not logged in
+    elif not is_logged_in_as_teacher():  # Check if user is logged in as a teacher
+        return redirect('/?error=Only+teachers+can+access+the+admin+page')  # Redirect to homepage with error if not a teacher
+    print('a')  # Print for debugging
+    print(word_id)  # Print word ID for debugging
 
-@app.route('/delete_word/<word_id>', methods=['GET', 'POST'])
-def delete_word(word_id):
-    print('a')
-    print(word_id)
-    if not is_logged_in():
-        return redirect("/login")
+    con = create_connection(DATABASE)  # Create a connection to the database
+    cur = con.cursor()  # Create a cursor object
+    query = "SELECT english_word FROM word_table WHERE word_id = ?"  # Define query to get word info
+    cur.execute(query, (word_id,))  # Execute the query
+    english_word = cur.fetchone()  # Fetch one result
+    con.close()  # Close the connection
+    print(english_word)  # Print word info for debugging
+    return render_template('delete_word_confirmed.html', name=english_word, id=word_id)  # Render delete_word_confirmed.html
 
+@app.route('/delete_word_confirmed/<word_id>')  # Route for confirming word deletion
+def delete_word_confirmed(word_id):  # Function to confirm word deletion
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/?message=Need+to+be+logged+in')  # Redirect to homepage with message if not logged in
 
+    con = create_connection(DATABASE)  # Create a connection to the database
+    cur = con.cursor()  # Create a cursor object
+    cur.execute("DELETE FROM word_table WHERE word_id = ?", (word_id,))  # Execute delete query
+    con.commit()  # Commit changes
+    con.close()  # Close the connection
 
-    con = create_connection(DATABASE)
-    cur = con.cursor()
-    query = "SELECT english_word FROM word_table WHERE word_id = ?"
-    cur.execute(query, (word_id, ))
-    english_word = cur.fetchone()
-    con.close()
-    print(english_word)
-    return render_template('delete_word_confirmed.html', name=english_word, id=word_id)
+    return redirect("/admin")  # Redirect to admin page
 
+@app.route('/add_word', methods=['GET', 'POST'])  # Route for adding a word
+def add_word_route():  # Function to handle adding a word
+    if not is_logged_in():  # Check if user is logged in
+        return redirect("/login")  # Redirect to login if not logged in
 
-@app.route('/delete_word_confirmed/<word_id>')
-def delete_word_confirmed(word_id):
-    if not is_logged_in():
-        return redirect('/?message=Need+to+be+logged+in')
-
-    con = create_connection(DATABASE)
-    cur = con.cursor()
-    cur.execute("DELETE FROM word_table WHERE word_id = ?", (word_id,))
-    con.commit()
-    con.close()
-
-    return redirect("/admin")
-
-
-@app.route('/add_word', methods=['GET', 'POST'])
-def add_word_route():
-    if not is_logged_in():
-        return redirect("/login")
-
-    if request.method == 'POST':
-        english_word = request.form['english_word']
+    if request.method == 'POST':  # Check if request method is POST
+        english_word = request.form['english_word']  # Get form data
         te_reo_word = request.form['te_reo_word']
         level = request.form['level']
         description = request.form['description']
         cat_id = request.form['cat_id']
 
-        con = create_connection(DATABASE)
-        cur = con.cursor()
+        con = create_connection(DATABASE)  # Create a connection to the database
+        cur = con.cursor()  # Create a cursor object
         cur.execute("""
             INSERT INTO word_table (english_word, te_reo_word, level, description, cat_id)
             VALUES (?, ?, ?, ?, ?)
-        """, (english_word, te_reo_word, level, description, cat_id))
-        con.commit()
-        con.close()
+        """, (english_word, te_reo_word, level, description, cat_id))  # Execute insert query
+        con.commit()  # Commit changes
+        con.close()  # Close the connection
 
-        return redirect("/admin")
+        return redirect("/admin")  # Redirect to admin page
 
-    # Get categories for the form
-    con = create_connection(DATABASE)
-    cur = con.cursor()
-    cur.execute("SELECT word_id, name FROM categories_list")
-    categories = cur.fetchall()
-    con.close()
+    con = create_connection(DATABASE)  # Create a connection to the database
+    cur = con.cursor()  # Create a cursor object
+    cur.execute("SELECT word_id, name FROM categories_list")  # Execute query to get categories
+    categories = cur.fetchall()  # Fetch all results
+    con.close()  # Close the connection
 
-    return render_template('admin.html', categories=categories, logged_in=is_logged_in())
+    return render_template('admin.html', categories=categories, logged_in=is_logged_in())  # Render admin.html
 
+@app.route('/category_add', methods=['POST'])  # Route for adding a category
+def category_add():  # Function to handle adding a category
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/?message=Need+to+be+logged+in')  # Redirect to homepage with message if not logged in
+    if request.method == 'POST':  # Check if request method is POST
+        print(request.form)  # Print form data for debugging
+        cat_name = request.form.get('name').strip()  # Get and clean category name
+        print(cat_name)  # Print category name for debugging
+        con = create_connection(DATABASE)  # Create a connection to the database
+        query = "INSERT INTO categories_list ('name') VALUES (?)"  # Define insert query
+        cur = con.cursor()  # Create a cursor object
+        cur.execute(query, (cat_name,))  # Execute query
+        con.commit()  # Commit changes
+        con.close()  # Close the connection
+        return redirect('/admin')  # Redirect to admin page
 
+@app.route('/category_delete', methods=['POST', 'GET'])  # Route for deleting a category
+def render_category_delete():  # Function to handle category deletion
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/dictionary/1')  # Redirect to dictionary page if not logged in
 
-@app.route('/category_add', methods=['POST'])
-def category_add():
-    if not is_logged_in():
-        return redirect('/?message=Need+to+be+logged+in+')
-    if request.method == 'POST':
-        print(request.form)
-        cat_name = request.form.get('name').strip()
-        print(cat_name)
-        con = create_connection(DATABASE)
-        query = "INSERT INTO categories_list ('name') VALUES (?)"
-        cur = con.cursor()
-        cur.execute(query, (cat_name, ))
-        con.commit()
-        con.close()
-        return redirect('/admin')
+    if request.method == 'POST':  # Check if request method is POST
+        cat_id = request.form.get('cat_id')  # Get category ID from form
 
+        if not cat_id:  # Check if category ID is not provided
+            return redirect('/admin?error=Category+not+selected')  # Redirect with error if not selected
 
-@app.route('/category_delete', methods=['POST', 'GET'])
-def render_category_delete():
-    if not is_logged_in():
-        return redirect('/dictionary/1')
+        con = create_connection(DATABASE)  # Create a connection to the database
+        cur = con.cursor()  # Create a cursor object
+        cur.execute("SELECT name FROM categories_list WHERE category_id = ?", (cat_id,))  # Execute query to get category info
+        category = cur.fetchone()  # Fetch one result
+        con.close()  # Close the connection
 
-    if request.method == 'POST':
-        categories = request.form.get('cat_id')
+        if not category:  # Check if category is not found
+            return redirect('/admin?error=Category+not+found')  # Redirect with error if not found
 
-        # Check if the categories value is present
-        if not categories:
-            return redirect('/admin?error=Category+not+selected')
+        cat_name = category[0]  # Get category name
+        return render_template("delete_word_confirmed.html", id=cat_id, name=cat_name, type="category")  # Render confirmation page
 
-        try:
-            category = categories.split(",")
-            cat_id = category[0].strip()
-            cat_name = category[1].strip()
-        except IndexError:
-            # Handle the case where the categories string does not split into the expected parts
-            return redirect('/admin?error=Invalid+category+format')
+    con = create_connection(DATABASE)  # Create a connection to the database
+    cur = con.cursor()  # Create a cursor object
+    cur.execute("SELECT category_id, name FROM categories_list")  # Execute query to get categories
+    categories = cur.fetchall()  # Fetch all results
+    con.close()  # Close the connection
 
-        return render_template("delete_word_confirmed.html", id=cat_id, name=cat_name, type="categories")
+    return render_template('delete_category.html', categories=categories, logged_in=is_logged_in())  # Render delete_category.html
 
-    # If GET request, render the delete category form
-    con = create_connection(DATABASE)
-    cur = con.cursor()
-    cur.execute("SELECT category_id, name FROM categories_list")
-    categories = cur.fetchall()
-    con.close()
+@app.route('/category_confirm_delete/<int:cat_id>', methods=['POST'])  # Route to confirm category deletion
+def category_confirm_delete(cat_id):  # Function to confirm category deletion
+    if not is_logged_in():  # Check if user is logged in
+        return redirect('/?message=Need+to+be+logged+in')  # Redirect to homepage with message if not logged in
 
-    return render_template('delete_category.html', categories=categories, logged_in=is_logged_in())
+    con = create_connection(DATABASE)  # Create a connection to the database
+    cur = con.cursor()  # Create a cursor object
+    cur.execute("DELETE FROM categories_list WHERE category_id = ?", (cat_id,))  # Execute delete query
+    con.commit()  # Commit changes
+    con.close()  # Close the connection
 
-@app.route('/category_confirm_delete/<int:cat_id>', methods=['POST'])
-def category_confirm_delete(cat_id):
-    if not is_logged_in():
-        return redirect('/?message=Need+to+be+logged+in')
+    return redirect("/admin")  # Redirect to admin page
 
-    con = create_connection(DATABASE)
-    cur = con.cursor()
-    cur.execute("DELETE FROM categories_list WHERE category_id = ?", (cat_id,))
-    con.commit()
-    con.close()
-
-    return redirect("/admin")
-
-if __name__ == '__main__':
-        app.run(debug=True)
-app.run(host='0.0.0.0', debug=True) # Run the Flask app
-
-
-
+if __name__ == '__main__':  # Check if the script is executed directly
+    app.run(debug=True)  # Run the Flask app in debug mode
+app.run(host='0.0.0.0', debug=True)  # Run the Flask app accessible from any network interface in debug mode

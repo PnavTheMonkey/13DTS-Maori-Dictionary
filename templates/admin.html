@@ -1,86 +1,87 @@
-{% extends "base.html" %}
+{% extends "base.html" %}  <!-- Extends the base template 'base.html' to reuse common layout elements. -->
 
-{% block pageheading %}Teacher Admin Page{% endblock %}
-{% block main %}
+{% block pageheading %}Teacher Admin Page{% endblock %}  <!-- Defines the 'pageheading' block with the title 'Teacher Admin Page'. -->
+{% block main %}  <!-- Defines the 'main' block to specify the main content of the page. -->
 
-<body>
-    <br><br><br><h2>Words Admin</h2>
-    <h3>Add New Word</h3>
-    <form action="/add_word" method="post">
-        <div class="form-group">
-            <div class="form-label"><label for="english_word">English Word</label></div>
-            <div class="form-element"><input type="text" name="english_word" id="english_word"></div>
+<body>  <!-- Starts the body of the HTML document. -->
+    <br><br><br><h2>Words Admin</h2>  <!-- Adds some line breaks and an H2 header 'Words Admin'. -->
+    <h3>Add New Word</h3>  <!-- Adds an H3 header 'Add New Word'. -->
+    <form action="/add_word" method="post">  <!-- Starts a form that submits data to the '/add_word' endpoint using the POST method. -->
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="english_word">English Word</label></div>  <!-- Label for the English word input field. -->
+            <div class="form-element"><input type="text" name="english_word" id="english_word"></div>  <!-- Input field for the English word. -->
         </div>
 
-        <div class="form-group">
-            <div class="form-label"><label for="te_reo_word">Maori Word</label></div>
-            <div class="form-element"><input type="text" name="te_reo_word" id="te_reo_word"></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="te_reo_word">Maori Word</label></div>  <!-- Label for the Maori word input field. -->
+            <div class="form-element"><input type="text" name="te_reo_word" id="te_reo_word"></div>  <!-- Input field for the Maori word. -->
         </div>
 
-        <div class="form-group">
-            <div class="form-label"><label for="level">Level</label></div>
-            <div class="form-element"><input type="text" name="level" id="level"></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="level">Level</label></div>  <!-- Label for the level input field. -->
+            <div class="form-element"><input type="text" name="level" id="level"></div>  <!-- Input field for the level. -->
         </div>
 
-        <div class="form-group">
-            <div class="form-label"><label for="description">Brief Definition of Word</label></div>
-            <div class="form-element"><input type="text" name="description" id="description"></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="description">Brief Definition of Word</label></div>  <!-- Label for the description input field. -->
+            <div class="form-element"><input type="text" name="description" id="description"></div>  <!-- Input field for the description. -->
         </div>
 
-        <div class="form-group">
-            <div class="form-label"><label for="cat_id">Category</label></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="cat_id">Category</label></div>  <!-- Label for the category dropdown. -->
             <div class="form-element">
-                <select id="cat_id" name="cat_id">
-                    {% for category in categories %}
-                    <option value="{{ category[0] }}">{{ category[1] }}</option>
+                <select id="cat_id" name="cat_id">  <!-- Dropdown menu for selecting a category. -->
+                    {% for category in categories %}  <!-- Loop through each category passed from the backend. -->
+                    <option value="{{ category[0] }}">{{ category[1] }}</option>  <!-- Create an option for each category with the value and name. -->
                     {% endfor %}
                 </select>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="form-element"><input type="submit" value="Add Word"></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-element"><input type="submit" value="Add Word"></div>  <!-- Submit button to add the word. -->
         </div>
     </form>
 
-    <br><br><br><br><h3>Delete Word</h3>
-    <form action="/delete_word" method="post">
-        <br><label for="id">Word ID:</label><br>
-        <br><input type="text" id="id" name="id"><br>
+    <br><br><br><br><h3>Delete Word</h3>  <!-- Adds some line breaks and an H3 header 'Delete Word'. -->
+    <form action="/delete_word" method="post">  <!-- Starts a form that submits data to the '/delete_word' endpoint using the POST method. -->
+        <br><label for="id">Word ID:</label><br>  <!-- Label for the word ID input field. -->
+        <br><input type="text" id="id" name="id"><br>  <!-- Input field for the word ID. -->
 
-        <br><input type="submit" value="Delete Word">
+        <br><input type="submit" value="Delete Word">  <!-- Submit button to delete the word. -->
     </form>
 
-    <br><br><h2>Category Admin</h2>
-    <h3>Add Category</h3>
-    <form class="myform" method="post" action="/category_add">
-        <div class="form-group">
-            <div class="form-label"><label for="name">Category Name</label></div>
-            <div class="form-element"><input type="text" name="name" id="name" required></div>
+    <br><br><h2>Category Admin</h2>  <!-- Adds some line breaks and an H2 header 'Category Admin'. -->
+    <h3>Add Category</h3>  <!-- Adds an H3 header 'Add Category'. -->
+    <form class="myform" method="post" action="/category_add">  <!-- Starts a form that submits data to the '/category_add' endpoint using the POST method. -->
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="name">Category Name</label></div>  <!-- Label for the category name input field. -->
+            <div class="form-element"><input type="text" name="name" id="name" required></div>  <!-- Input field for the category name, with the required attribute. -->
         </div>
-        <div class="form-group">
-            <div class="form-label"></div>
-            <div class="form-element"><input type="submit" value="Add Category"></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"></div>  <!-- Empty label for spacing. -->
+            <div class="form-element"><input type="submit" value="Add Category"></div>  <!-- Submit button to add the category. -->
         </div>
     </form>
 
-    <br><br><br><br><h3>Delete Category</h3>
-    <form class="myform" method="post" action="/category_delete">
-        <div class="form-group">
-            <div class="form-label"><label for="cat_id">Category Name</label></div>
+    <br><br><br><br><h3>Delete Category</h3>  <!-- Adds some line breaks and an H3 header 'Delete Category'. -->
+    <form class="myform" method="post" action="/category_delete">  <!-- Starts a form that submits data to the '/category_delete' endpoint using the POST method. -->
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"><label for="cat_id">Category Name</label></div>  <!-- Label for the category dropdown. -->
             <div class="form-element">
-                <select id="cat_id" name="cat_id">
-                    {% for category in categories %}
-                    <option value="{{ category[0] }}">{{ category[1] }}</option>
+                <select id="cat_id" name="cat_id">  <!-- Dropdown menu for selecting a category to delete. -->
+                    {% for category in categories %}  <!-- Loop through each category passed from the backend. -->
+                    <option value="{{ category[0] }}">{{ category[1] }}</option>  <!-- Create an option for each category with the value and name. -->
                     {% endfor %}
                 </select>
             </div>
         </div>
-        <div class="form-group">
-            <div class="form-label"></div>
-            <div class="form-element"><input type="submit" value="Delete Category"></div>
+        <div class="form-group">  <!-- Grouping for the form element. -->
+            <div class="form-label"></div>  <!-- Empty label for spacing. -->
+            <div class="form-element"><input type="submit" value="Delete Category"></div>  <!-- Submit button to delete the category. -->
         </div>
     </form>
 
-</body>
-{% endblock %}
+
+</body>  <!-- Ends the body of the HTML document. -->
+{% endblock %}  <!-- Marks the end of the 'main' block. -->

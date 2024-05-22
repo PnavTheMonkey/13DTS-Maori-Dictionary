@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "base.html" %}  <!-- Inherit layout from 'base.html'. -->
 
-{% block pageheading %}Confirm Delete Word{% endblock %}
+{% block pageheading %}Confirm Delete Word{% endblock %}  <!-- Set the page heading to 'Confirm Delete Word'. -->
 
-{% block main %}
-    <h2>Are you sure you want to delete this word {{ name }}?</h2>
-        <a href="/delete_word_confirmed/{{ id }}">Yes></a>
-
-        <a href="/admin">Cancel</a>
-{% endblock %}
+{% block main %}  <!-- Start the main content block. -->
+    <h2>Are you sure you want to delete this word {{ name }}?</h2>  <!-- Display a confirmation message with the word's name. -->
+        <a href="/delete_word_confirmed/{{ id }}">Yes></a>  <!-- Link to confirm deletion, passing the word ID. -->
+        <a href="/admin">Cancel</a>  <!-- Link to cancel deletion and go back to the admin page. -->
+{% endblock %}  <!-- End the main content block. -->
