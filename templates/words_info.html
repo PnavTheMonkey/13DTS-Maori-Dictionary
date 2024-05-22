@@ -1,62 +1,70 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} <!-- Extends the base HTML template -->
 
-{% block pageheading %}Word Information{% endblock %}
+{% block pageheading %}Word Information{% endblock %} <!-- Sets the content for the 'pageheading' block -->
 
-{% block main %}
-    <div class="catergories_list-dictionary">
+{% block main %} <!-- Begins the 'main' block for the main content of the page -->
+    <div class="categories_list-dictionary"> <!-- Container for the categories list -->
         <ul>
-            {% for category in categories %}
-             <li>
-                 <a href="/dictionary/{{ category[0] }}">{{ category[1] }} </a>
-             </li>
-            {% endfor %}
+            {% for category in categories %} <!-- Loop through each category in 'categories' -->
+            <li>
+                <a href="/dictionary/{{ category[0] }}">{{ category[1] }}</a> <!-- Link to each category page, displaying the category name -->
+            </li>
+            {% endfor %} <!-- End of the categories loop -->
         </ul>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>English Word</th>
-          <th>Maori Word</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>User Id</th>
-          <th>Level</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for word in words %}
-        <tr>
-            <td>{{ word[0] }}</td>
-            <td>{{ word[1] }}</td>
-            <td>{{ word[2] }}</td>
-            <td>{{ word[3] }}</td>
-            <td>{{ word[4] }}</td>
-            <td>{{ word[5] }}</td>
-            <td>{{ word[6] }}</td>
-        </tr>
-        {% endfor %}
-
-        {% if all_word_info %}
-            {% for word_info in all_word_info %}
+    <table> <!-- Table to display word information -->
+        <thead> <!-- Table header -->
             <tr>
-                <td>{{ word_info[0] }}</td>
-                <td>{{ word_info[1] }}</td>
-                <td>{{ word_info[2] }}</td>
-                <td>{{ word_info[3] }}</td>
-                <td>{{ word_info[4] }}</td>
-                <td>{{ word_info[5] }}</td>
-                <td>{{ word_info[6] }}</td>
-                <td>
-                    <a href="/delete_word/{{ word_info[0] }}">Delete Word</a>
-                </td>
-
+                <th>Id</th> <!-- Column for word ID -->
+                <th>English Word</th> <!-- Column for English word -->
+                <th>Maori Word</th> <!-- Column for Maori word -->
+                <th>Category</th> <!-- Column for category -->
+                <th>Description</th> <!-- Column for description -->
+                <th>User Id</th> <!-- Column for user ID -->
+                <th>Level</th> <!-- Column for level -->
+                <th>Image</th> <!-- Column for image -->
+                <th></th> <!-- Added a new column for actions (like deleting a word) -->
             </tr>
+        </thead>
+        <tbody> <!-- Table body -->
+            {% for word in words %} <!-- Loop through each word in 'words' -->
+            <tr>
+                <td>{{ word[0] }}</td> <!-- Display word ID -->
+                <td>{{ word[1] }}</td> <!-- Display English word -->
+                <td>{{ word[2] }}</td> <!-- Display Maori word -->
+                <td>{{ word[3] }}</td> <!-- Display category -->
+                <td>{{ word[4] }}</td> <!-- Display description -->
+                <td>{{ word[5] }}</td> <!-- Display user ID -->
+                <td>{{ word[6] }}</td> <!-- Display level -->
+                <td>
+                    <img src="{{ url_for('static', filename='images/' ~ word[7] ~ '.jpg') }}" style="max-width: 100px;"> <!-- Display image with a max width of 100px -->
+                </td>
+                <td>
+                    <a href="/delete_word/{{ word[0] }}">Delete Word</a> <!-- Link to delete the word -->
+                </td>
+            </tr>
+            {% endfor %} <!-- End of the words loop -->
 
-            {% endfor %}
-        {% endif %}
-      </tbody>
+            {% if all_word_info %} <!-- Check if 'all_word_info' exists -->
+                {% for word_info in all_word_info %} <!-- Loop through each word_info in 'all_word_info' -->
+                <tr>
+                    <td>{{ word_info[0] }}</td> <!-- Display word ID -->
+                    <td>{{ word_info[1] }}</td> <!-- Display English word -->
+                    <td>{{ word_info[2] }}</td> <!-- Display Maori word -->
+                    <td>{{ word_info[3] }}</td> <!-- Display category -->
+                    <td>{{ word_info[4] }}</td> <!-- Display description -->
+                    <td>{{ word_info[5] }}</td> <!-- Display user ID -->
+                    <td>{{ word_info[6] }}</td> <!-- Display level -->
+                    <td>
+                        <img src="{{ url_for('static', filename='images/' ~ word_info[1] ~ '.jpg') }}" style="max-width: 100px;"> <!-- Display image with a max width of 100px -->
+                    </td>
+                    <td>
+                        <a href="/delete_word/{{ word_info[0] }}">Delete Word</a> <!-- Link to delete the word -->
+                    </td>
+                </tr>
+                {% endfor %} <!-- End of the all_word_info loop -->
+            {% endif %} <!-- End of the check for all_word_info -->
+        </tbody>
     </table>
-{% endblock %}
-j
+{% endblock %} <!-- End of the main block -->
